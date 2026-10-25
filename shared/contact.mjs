@@ -3,10 +3,10 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const planIds = ["free", "starter", "professional", "business"];
 
 const planLabels = {
-  free: "FREE",
-  starter: "Starter",
-  professional: "Professional",
-  business: "Business",
+  free: "Starter",
+  starter: "Grow",
+  professional: "Pro",
+  business: "Elite",
 };
 
 export function validateContact(draft) {

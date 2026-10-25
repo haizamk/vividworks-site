@@ -1,15 +1,15 @@
 /**
  * Pricing source of truth for the marketing site.
  *
- * FREE reflects the scope approved for this website. Starter, Professional and
- * Business are proposed marketing labels. Replace only the unconfirmed fields
- * when the official package specification is approved.
+ * Starter is the planned RM0 specification. Grow, Pro and Elite are named,
+ * but their prices and limits are not invented here.
  *
- * Do not add prices, page limits, storage, bandwidth, support periods,
- * payment terms or premium inclusions that have not been confirmed.
+ * Stored plan ids stay inside the Laravel allow-list
+ * (free, starter, professional, business) so the contact form does not need
+ * a backend change. The visible names are Starter, Grow, Pro and Elite.
  */
 
-export type FeatureId = "pages" | "stack" | "database" | "templates" | "responsive" | "editor";
+export type FeatureId = "pages" | "stack" | "database" | "aiGenerate" | "aiEdit" | "editor";
 
 export type PlanFeature = {
   id: FeatureId;
@@ -41,11 +41,11 @@ export const comparisonRows: { id: FeatureId | "nameStatus" | "price"; label: st
   { id: "nameStatus", label: "Status nama" },
   { id: "price", label: "Harga" },
   { id: "pages", label: "Halaman" },
-  { id: "stack", label: "Format halaman" },
+  { id: "stack", label: "Format website diterbitkan" },
+  { id: "aiGenerate", label: "AI Generate" },
+  { id: "aiEdit", label: "AI Edit" },
+  { id: "editor", label: "Editor selepas kredit AI" },
   { id: "database", label: "Pangkalan data website pelanggan" },
-  { id: "templates", label: "Template" },
-  { id: "responsive", label: "Mesra telefon bimbit" },
-  { id: "editor", label: "Penyuntingan visual" },
 ];
 
 const pendingFeatureNote = "Akan disahkan";
@@ -53,63 +53,63 @@ const pendingFeatureNote = "Akan disahkan";
 export const pricingPlans: PricingPlan[] = [
   {
     id: "free",
-    name: "FREE",
+    name: "Starter",
     nameStatus: "confirmed",
-    badge: "Skop semasa",
+    badge: "Dirancang",
     price: {
       display: "RM0",
       confirmed: true,
-      note: "Tempoh dan syarat lanjut belum disahkan. Tidak dinyatakan sebagai percuma seumur hidup.",
+      note: "Free Forever. Pakej ini belum dibuka.",
     },
-    summary: "Skop permulaan yang dinyatakan untuk laman pemasaran ini.",
+    summary: "Spesifikasi yang dirancang. Fungsi di bawah belum tersedia pada laman ini.",
     features: [
       { id: "pages", value: "1–3 halaman statik", confirmed: true },
-      { id: "stack", value: "HTML, CSS dan JavaScript", confirmed: true },
+      { id: "aiGenerate", value: "1 kali AI Generate", confirmed: true },
+      { id: "aiEdit", value: "2 kali AI Edit", confirmed: true },
+      { id: "editor", value: "Editor GrapesJS selepas kredit AI habis", confirmed: true },
+      { id: "stack", value: "HTML, CSS dan JavaScript untuk website diterbitkan", confirmed: true },
       {
         id: "database",
-        value: "Tiada database atau backend khusus untuk website pelanggan",
+        value: "Tiada pangkalan data khusus untuk website pelanggan",
         confirmed: true,
       },
-      { id: "templates", value: "Template asas", confirmed: true },
-      { id: "responsive", value: "Mesra telefon bimbit", confirmed: true },
-      { id: "editor", value: "Penyuntingan visual melalui platform", confirmed: true },
     ],
-    cta: { label: "Mula Percuma", intent: "start-free" },
+    cta: { label: "Bina Website Percuma", intent: "start-free" },
   },
   {
     id: "starter",
-    name: "Starter",
+    name: "Grow",
     nameStatus: "proposed",
-    badge: "Label cadangan",
-    price: { display: pendingFeatureNote, confirmed: false, note: "" },
-    summary: "Nama pemasaran cadangan. Butiran rasmi belum dimasukkan.",
+    badge: "Harga belum diumumkan",
+    price: { display: "Harga Akan Diumumkan", confirmed: false, note: "Tiada harga atau had penggunaan." },
+    summary: "Nama pakej telah ditetapkan. Butiran lain belum diumumkan.",
     features: [],
-    cta: { label: "Lihat Maklumat", intent: "view-info" },
+    cta: { label: "Tanya butiran", intent: "contact" },
   },
   {
     id: "professional",
-    name: "Professional",
+    name: "Pro",
     nameStatus: "proposed",
-    badge: "Label cadangan",
-    price: { display: pendingFeatureNote, confirmed: false, note: "" },
-    summary: "Nama pemasaran cadangan. Butiran rasmi belum dimasukkan.",
+    badge: "Harga belum diumumkan",
+    price: { display: "Harga Akan Diumumkan", confirmed: false, note: "Tiada harga atau had penggunaan." },
+    summary: "Nama pakej telah ditetapkan. Butiran lain belum diumumkan.",
     features: [],
-    cta: { label: "Lihat Maklumat", intent: "view-info" },
+    cta: { label: "Tanya butiran", intent: "contact" },
   },
   {
     id: "business",
-    name: "Business",
+    name: "Elite",
     nameStatus: "proposed",
-    badge: "Label cadangan",
-    price: { display: pendingFeatureNote, confirmed: false, note: "" },
-    summary: "Nama pemasaran cadangan. Butiran rasmi belum dimasukkan.",
+    badge: "Harga belum diumumkan",
+    price: { display: "Harga Akan Diumumkan", confirmed: false, note: "Tiada harga atau had penggunaan." },
+    summary: "Nama pakej telah ditetapkan. Butiran lain belum diumumkan.",
     features: [],
-    cta: { label: "Hubungi Kami", intent: "contact" },
+    cta: { label: "Tanya butiran", intent: "contact" },
   },
 ];
 
 export const pricingDisclaimer =
-  "Starter, Professional dan Business ialah label pemasaran yang menunggu pengesahan. Harga, had dan ciri bagi label tersebut tidak dicipta di laman ini. Apabila spesifikasi rasmi diluluskan, kemas kini fail konfigurasi pakej sahaja.";
+  "Starter ialah spesifikasi RM0 yang dirancang dan belum dilancarkan. Grow, Pro dan Elite belum mempunyai harga atau had penggunaan. Laman ini tidak memproses bayaran.";
 
 export function planById(id: string | null | undefined): PricingPlan | undefined {
   return pricingPlans.find((plan) => plan.id === id);

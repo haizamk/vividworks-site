@@ -6,7 +6,7 @@ import { EditorPreview } from "./EditorPreview.tsx";
 
 const points = [
   { icon: MousePointerClick, label: "Tanpa perlu tahu kod" },
-  { icon: CircleDollarSign, label: "Skop FREE RM0" },
+  { icon: CircleDollarSign, label: "Starter RM0, belum dibuka" },
   { icon: Hammer, label: "Editor masih dibangunkan" },
 ];
 

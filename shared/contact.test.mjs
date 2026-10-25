@@ -7,7 +7,7 @@ const valid = {
   email: "aina@example.com",
   business: "Kedai Aina",
   plan: "free",
-  message: "Saya ingin tahu tentang pakej FREE untuk laman statik.",
+  message: "Saya ingin tahu tentang pakej Starter untuk laman statik.",
 };
 
 test("accepts a complete inquiry", () => {
@@ -25,5 +25,5 @@ test("normalizes surrounding space and builds a readable summary", () => {
   assert.equal(contact.name, "Aina");
   const summary = contactSummary(contact);
   assert.match(summary, /Perniagaan: —/);
-  assert.match(summary, /Pakej: FREE/);
+  assert.match(summary, /Pakej: Starter/);
 });

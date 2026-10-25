@@ -11,7 +11,7 @@ export function PricingSection() {
         <SectionHeading
           eyebrow="Pakej"
           title="Mulakan dengan skop yang jelas"
-          description="Pakej FREE mengikut skop yang dinyatakan untuk laman ini. Tiga nama lagi ialah label cadangan sehingga spesifikasi rasmi dimasukkan."
+          description="Starter ialah spesifikasi RM0 yang dirancang. Grow, Pro dan Elite belum mempunyai harga atau had."
           titleId="pakej-tajuk"
         />
         <div className="mt-12">

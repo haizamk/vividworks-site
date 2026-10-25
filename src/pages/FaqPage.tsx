@@ -7,7 +7,7 @@ import { PageHeader } from "../components/layout/PageHeader.tsx";
 import { Seo } from "../components/seo/Seo.tsx";
 
 const description =
-  "Jawapan tentang coding, pakej FREE, suntingan, telefon bimbit, domain, naik taraf dan bila pembina website AI boleh digunakan.";
+  "Jawapan tentang coding, pakej Starter, suntingan, telefon bimbit, domain, naik taraf dan bila pembina website AI boleh digunakan.";
 
 export default function FaqPage() {
   return (

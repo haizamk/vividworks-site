@@ -92,7 +92,7 @@ Edit these files rather than hard-coding values in components:
 
 Optional environment overrides are listed in `.env.example`. Copy it to `.env` only when you have real values. Empty contact fields are intentional: the site must not invent an email address, phone number, or office address.
 
-Starter, Professional, and Business are proposed labels. Leave their price and features as “Akan disahkan” until an approved specification replaces them. Do not describe FREE as free for life unless that is explicitly confirmed.
+Starter is the planned RM0 package, shown as Free Forever, and it is not open yet. Grow, Pro and Elite have no price and no usage limits. Their stored contact values stay `starter`, `professional` and `business` so the current Laravel allow-list still accepts the form.
 
 ## Deployment (GitHub + Coolify)
 

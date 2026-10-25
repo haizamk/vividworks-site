@@ -83,7 +83,7 @@ export const reasons: IconItem[] = [
   },
   {
     title: "Fleksibel untuk perniagaan yang berkembang",
-    description: "Mulakan dengan skop FREE yang dinyatakan, kemudian semak naik taraf apabila butiran rasmi disahkan.",
+    description: "Mulakan dengan spesifikasi Starter yang dirancang, kemudian semak naik taraf apabila butiran rasmi disahkan.",
     icon: Layers,
   },
   {
@@ -113,7 +113,7 @@ export const comingSoonCopy = {
   },
   "mula-percuma": {
     title: "Pakej percuma belum boleh dimulakan",
-    body: "Permintaan untuk memulakan pakej FREE tidak diproses di laman ini. Tiada akaun, bil atau website dicipta.",
+    body: "Permintaan untuk memulakan pakej Starter tidak diproses di laman ini. Tiada akaun, bil atau website dicipta.",
   },
   "pilih-template": {
     title: "Pemilihan template belum disambungkan",
@@ -187,7 +187,7 @@ export const termsSections = [
   {
     id: "bayaran",
     heading: "Pakej dan bayaran",
-    body: "Selain skop FREE yang dinyatakan sebagai maklumat pemasaran, harga dan terma bayaran belum diluluskan. Laman ini tidak memproses pembayaran.",
+    body: "Selain spesifikasi Starter yang dinyatakan sebagai maklumat pemasaran, harga dan terma bayaran bagi Grow, Pro dan Elite belum diluluskan. Laman ini tidak memproses pembayaran.",
   },
   {
     id: "harta",

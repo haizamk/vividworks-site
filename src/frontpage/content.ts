@@ -45,37 +45,3 @@ export const showcaseTemplates = [
   { id: "creative-tech", label: "Portfolio", note: "Hasil kerja dan profil" },
 ] as const;
 
-export const frontPlans = [
-  {
-    id: "free",
-    name: "FREE",
-    price: "RM0",
-    priceNote: "Harga yang dinyatakan untuk skop permulaan. Bukan percuma seumur hidup.",
-    summary: "Ciri di bawah ialah skop yang dirancang, bukan perkhidmatan yang sudah dibuka.",
-    features: [
-      "1–3 halaman statik",
-      "Editor visual",
-      "Website responsif",
-      "Tiada kad kredit diperlukan",
-    ],
-    cta: "Bina Website Percuma",
-    intent: "bina-website" as const,
-    featured: true,
-  },
-  {
-    id: "premium",
-    name: "Premium",
-    price: "Harga Akan Diumumkan",
-    priceNote: "Tiada harga rasmi.",
-    summary: "Ciri premium masih cadangan, bukan janji rasmi.",
-    features: [
-      "Halaman tambahan — cadangan",
-      "Domain sendiri — belum disahkan",
-      "Sokongan keutamaan — cadangan",
-      "Tiada bayaran diproses di laman ini",
-    ],
-    cta: "Tanya butiran",
-    intent: "contact" as const,
-    featured: false,
-  },
-] as const;

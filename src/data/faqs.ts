@@ -13,9 +13,9 @@ export const faqs: FaqItem[] = [
   },
   {
     id: "pakej-free",
-    question: "Apakah yang termasuk dalam pakej FREE?",
+    question: "Apakah yang termasuk dalam pakej Starter?",
     answer:
-      "Skop yang dinyatakan buat masa ini ialah harga cadangan RM0, 1 hingga 3 halaman statik, fail HTML, CSS dan JavaScript, template asas, reka bentuk mesra telefon bimbit, serta penyuntingan visual melalui platform. Tiada pangkalan data atau backend khusus untuk website pelanggan. Pakej ini tidak dinyatakan sebagai percuma seumur hidup. Tempoh, syarat dan had lain belum disahkan.",
+      "Spesifikasi yang dirancang ialah RM0, Free Forever, 1 hingga 3 halaman statik, 1 kali AI Generate, 2 kali AI Edit, editor GrapesJS selepas kredit AI habis, dan fail HTML, CSS serta JavaScript untuk website yang diterbitkan. Tiada pangkalan data khusus untuk website pelanggan. Pakej ini belum dibuka, jadi tiada kredit atau editor boleh digunakan sekarang.",
   },
   {
     id: "edit-selepas-terbit",
@@ -27,7 +27,7 @@ export const faqs: FaqItem[] = [
     id: "mesra-telefon",
     question: "Adakah website mesra telefon bimbit?",
     answer:
-      "Ya, untuk skop yang telah dinyatakan. Pakej FREE merangkumi reka bentuk mesra telefon bimbit, dan pratonton template disediakan untuk desktop serta telefon. Anda boleh menukar paparan itu pada galeri template.",
+      "Pratonton template pada laman ini disediakan untuk desktop dan telefon. Sama ada setiap website pelanggan dijamin mesra telefon bimbit belum disahkan di luar spesifikasi Starter yang masih dirancang.",
   },
   {
     id: "domain",
@@ -39,7 +39,7 @@ export const faqs: FaqItem[] = [
     id: "naik-taraf",
     question: "Bagaimana proses naik taraf pakej?",
     answer:
-      "Proses naik taraf masih dalam perancangan. Nama Starter, Professional dan Business ialah label pemasaran cadangan. Harga, ciri, tempoh dan terma pembayaran belum disahkan, dan laman ini tidak memproses bayaran. Untuk pertanyaan, gunakan halaman Hubungi Kami.",
+      "Naik taraf masih dalam perancangan. Grow, Pro dan Elite belum mempunyai harga atau had penggunaan. Laman ini tidak memproses bayaran. Untuk pertanyaan, gunakan halaman Hubungi Kami.",
   },
   {
     id: "bila-boleh-diguna",

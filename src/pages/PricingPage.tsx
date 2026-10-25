@@ -8,7 +8,7 @@ import { Seo } from "../components/seo/Seo.tsx";
 import { CtaSection } from "../sections/CtaSection.tsx";
 
 const description =
-  "Bandingkan pakej FREE dan label cadangan Starter, Professional serta Business. Harga yang belum disahkan dipaparkan dengan jelas.";
+  "Bandingkan Starter RM0 yang dirancang dengan Grow, Pro dan Elite. Harga yang belum diumumkan dipaparkan dengan jelas.";
 
 export default function PricingPage() {
   return (
