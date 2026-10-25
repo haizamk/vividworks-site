@@ -21,7 +21,7 @@ export function HowItWorks() {
                 {index < steps.length - 1 ? (
                   <span aria-hidden="true" className="absolute top-6 left-[calc(50%+2.5rem)] hidden h-px w-[calc(100%-5rem)] bg-fp-line lg:block" />
                 ) : null}
-                <span className="relative mx-auto grid size-12 place-items-center rounded-full bg-fp-indigo text-lg font-bold text-white">
+                <span className="relative z-10 mx-auto grid size-12 place-items-center rounded-full bg-fp-indigo text-lg font-bold text-white">
                   {index + 1}
                 </span>
                 <h3 className="mt-4 text-lg font-semibold text-fp-ink">{step.title}</h3>

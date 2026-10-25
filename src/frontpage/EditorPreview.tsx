@@ -5,7 +5,7 @@ const blocks = ["Tajuk", "Perenggan", "Gambar", "Butang"];
 export function EditorPreview() {
   return (
     <div className="mx-auto w-full max-w-xl lg:max-w-none">
-      <div className="relative">
+      <div className="relative lg:grid lg:grid-cols-[minmax(0,1fr)_11rem] lg:items-end lg:gap-5">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-10 right-0 -z-10 h-64 w-64 rounded-full bg-[radial-gradient(circle,#c4b5fd_0%,rgba(79,70,229,0.18)_42%,transparent_70%)] blur-2xl"
@@ -79,7 +79,7 @@ export function EditorPreview() {
         </div>
       </div>
 
-      <div className="fp-float mx-auto mt-4 w-[148px] overflow-hidden rounded-[1.5rem] border-[5px] border-fp-ink bg-white shadow-[0_18px_40px_-24px_rgba(15,23,42,0.65)] sm:absolute sm:right-[-0.5rem] sm:bottom-6 sm:mt-0 lg:right-[-1.25rem]">
+      <div className="fp-float mx-auto mt-4 box-border w-[148px] overflow-hidden rounded-[1.5rem] border-[5px] border-fp-ink bg-white shadow-[0_18px_40px_-24px_rgba(15,23,42,0.65)] lg:mx-0 lg:mt-8 lg:w-full">
         <div className="mx-auto mt-1.5 h-1 w-10 rounded-full bg-fp-line" aria-hidden="true" />
         <div className="p-3" aria-hidden="true">
           <p className="text-[11px] font-semibold text-fp-ink">Contoh Kedai</p>

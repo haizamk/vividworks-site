@@ -34,7 +34,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [menuLocation, setMenuLocation] = useState(locationKey);
   const [scrolled, setScrolled] = useState(false);
-  const headerRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const login = futureTarget("log-masuk");
   const start = futureTarget("bina-website");
@@ -90,8 +90,8 @@ export function Navbar() {
   }, [open]);
 
   return (
+    <div ref={headerRef}>
     <header
-      ref={headerRef}
       className={cx(
         "sticky top-0 z-50 border-b bg-white/90 backdrop-blur-md",
         scrolled || open ? "border-fp-line" : "border-transparent",
@@ -143,9 +143,10 @@ export function Navbar() {
         </button>
       </div>
 
-      {open ? (
-        <MobileMenu id="menu-frontpage" items={frontNav} currentId={currentId} login={login} start={start} />
-      ) : null}
     </header>
+    {open ? (
+      <MobileMenu id="menu-frontpage" items={frontNav} currentId={currentId} login={login} start={start} />
+    ) : null}
+    </div>
   );
 }
