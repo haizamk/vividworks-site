@@ -2,7 +2,16 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { cx } from "../../lib/cx.ts";
 
-type ButtonVariant = "primary" | "secondary" | "ghost" | "light" | "outlineLight";
+type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "ghost"
+  | "light"
+  | "outlineLight"
+  | "indigo"
+  | "indigoSecondary"
+  | "indigoGhost"
+  | "onIndigo";
 type ButtonSize = "md" | "lg";
 
 type ButtonProps = {
@@ -11,6 +20,7 @@ type ButtonProps = {
   external?: boolean;
   variant?: ButtonVariant;
   size?: ButtonSize;
+  shape?: "xl" | "full";
   className?: string;
   type?: "button" | "submit";
   onClick?: () => void;
@@ -25,6 +35,10 @@ const variants: Record<ButtonVariant, string> = {
   ghost: "bg-transparent text-navy hover:bg-surface",
   light: "bg-white text-brand hover:bg-surface",
   outlineLight: "border border-white/45 bg-transparent text-white hover:bg-white/10",
+  indigo: "bg-fp-indigo text-white shadow-sm hover:bg-fp-indigo-dark",
+  indigoSecondary: "border border-fp-line bg-white text-fp-ink hover:border-fp-indigo/30 hover:bg-fp-indigo-soft",
+  indigoGhost: "bg-transparent text-fp-ink hover:bg-fp-indigo-soft",
+  onIndigo: "bg-white text-fp-indigo hover:bg-fp-indigo-soft",
 };
 
 const sizes: Record<ButtonSize, string> = {
@@ -38,6 +52,7 @@ export function Button({
   external = false,
   variant = "primary",
   size = "md",
+  shape = "xl",
   className,
   type = "button",
   onClick,
@@ -46,7 +61,8 @@ export function Button({
   ariaControls,
 }: ButtonProps) {
   const classes = cx(
-    "inline-flex items-center justify-center gap-2 rounded-xl text-center font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60",
+    "inline-flex items-center justify-center gap-2 text-center font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60",
+    shape === "full" ? "rounded-full" : "rounded-xl",
     variants[variant],
     sizes[size],
     className,

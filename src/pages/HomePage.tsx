@@ -1,32 +1,32 @@
-import { site } from "../data/site.ts";
 import { faqNodes, graph, organizationNodes } from "../lib/schema.ts";
 import { Seo } from "../components/seo/Seo.tsx";
-import { BenefitsSection } from "../sections/BenefitsSection.tsx";
-import { CtaSection } from "../sections/CtaSection.tsx";
-import { FaqSection } from "../sections/FaqSection.tsx";
-import { HeroSection } from "../sections/HeroSection.tsx";
-import { HowItWorksSection } from "../sections/HowItWorksSection.tsx";
-import { PricingSection } from "../sections/PricingSection.tsx";
-import { TemplatesSection } from "../sections/TemplatesSection.tsx";
-import { WhySection } from "../sections/WhySection.tsx";
+import { FAQAccordion } from "../frontpage/FAQAccordion.tsx";
+import { FinalCTA } from "../frontpage/FinalCTA.tsx";
+import { HeroSection } from "../frontpage/HeroSection.tsx";
+import { HowItWorks } from "../frontpage/HowItWorks.tsx";
+import { IndustryShowcase } from "../frontpage/IndustryShowcase.tsx";
+import { PricingSection } from "../frontpage/PricingSection.tsx";
+import { TemplateGallery } from "../frontpage/TemplateGallery.tsx";
+
+const description =
+  "VividWorks membantu individu dan perniagaan kecil membina website profesional tanpa perlu tahu kod.";
 
 export function HomePage() {
   return (
     <>
       <Seo
         title="Bina Website Profesional dengan AI"
-        description={site.description}
+        description={description}
         path="/"
         jsonLd={graph([...organizationNodes("/"), ...faqNodes("/")])}
       />
       <HeroSection />
-      <BenefitsSection />
+      <IndustryShowcase />
+      <HowItWorks />
+      <TemplateGallery />
       <PricingSection />
-      <TemplatesSection />
-      <HowItWorksSection />
-      <WhySection />
-      <FaqSection />
-      <CtaSection />
+      <FAQAccordion />
+      <FinalCTA />
     </>
   );
 }

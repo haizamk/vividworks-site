@@ -13,6 +13,14 @@ export const brandColors = {
   muted: "#46566C",
   line: "#E5EBF3",
   white: "#FFFFFF",
+  /* Frontpage palette. Other pages keep the colours above. */
+  fpIndigo: "#4F46E5",
+  fpIndigoDark: "#4338CA",
+  fpIndigoSoft: "#EEF2FF",
+  fpInk: "#0F172A",
+  fpMuted: "#475569",
+  fpLine: "#E2E8F0",
+  fpViolet: "#7C3AED",
 } as const;
 
 export const brandFont = {

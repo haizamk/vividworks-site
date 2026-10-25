@@ -30,6 +30,12 @@ npm start
 
 `npm start` serves the production build and the API on `PORT` (default 8787). `npm run build` checks brand colours and regenerates the template preview SVGs.
 
+## Frontpage redesign (Fasa C1)
+
+The homepage on branch `cursor/vividworks-frontpage-redesign-3339` uses the indigo design tokens in `src/data/brand.ts` (`fpIndigo` and the related `fp*` colours). Privacy, terms, contact, pricing, templates, FAQ and how-it-works keep the previous header, footer and palette.
+
+This branch is local only. Do not deploy it to preview.vividworks.my until that cutover is approved. `npm run dev` stays on this machine: the site on port 4321 and a local API on port 8787. Leave `DATABASE_URL` unset so contact inquiries stay in `data/inquiries.json`.
+
 ## Pages
 
 | Path | Purpose |
