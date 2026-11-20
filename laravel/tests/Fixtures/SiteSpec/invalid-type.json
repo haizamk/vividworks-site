@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.1",
+  "site": {
+    "name": 12345,
+    "language": "ms",
+    "category": "retail"
+  },
+  "design": {
+    "recommended_template_id": "tpl-a",
+    "selected_template_id": "tpl-a",
+    "selection_source": "ai",
+    "theme_source": "ai",
+    "theme": {
+      "primary_color": "#112233",
+      "font_token": "sans-modern"
+    }
+  },
+  "pages": [
+    {
+      "title": "Utama",
+      "slug": "utama",
+      "sections": [
+        {
+          "id": "hero-1",
+          "type": "hero",
+          "heading": "Selamat datang"
+        }
+      ]
+    }
+  ]
+}

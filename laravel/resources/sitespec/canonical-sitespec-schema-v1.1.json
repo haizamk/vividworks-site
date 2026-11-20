@@ -1,0 +1,114 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "site", "design", "pages"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": ["1.1"]
+    },
+    "site": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "language", "category"],
+      "properties": {
+        "name": { "type": "string" },
+        "language": { "type": "string", "enum": ["ms", "en"] },
+        "category": { "type": "string" }
+      }
+    },
+    "design": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recommended_template_id",
+        "selected_template_id",
+        "selection_source",
+        "theme_source",
+        "theme"
+      ],
+      "properties": {
+        "recommended_template_id": { "type": "string" },
+        "selected_template_id": { "type": "string" },
+        "selection_source": { "type": "string", "enum": ["ai", "customer"] },
+        "theme_source": { "type": "string", "enum": ["ai", "customer"] },
+        "theme": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["primary_color", "font_token"],
+          "properties": {
+            "primary_color": { "type": "string" },
+            "font_token": {
+              "type": "string",
+              "enum": ["sans-modern", "sans-classic", "serif-elegant"]
+            }
+          }
+        }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "slug", "sections"],
+        "properties": {
+          "title": { "type": "string" },
+          "slug": { "type": "string" },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "type", "heading"],
+              "properties": {
+                "id": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "hero",
+                    "about",
+                    "services",
+                    "products",
+                    "gallery",
+                    "testimonials",
+                    "contact"
+                  ]
+                },
+                "heading": { "type": "string" },
+                "description": { "type": "string" },
+                "contact_ref": {
+                  "type": "string",
+                  "enum": ["primary_whatsapp", "primary_email", "primary_phone"]
+                },
+                "image_ref": { "type": "string" },
+                "cta": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["label", "href"],
+                  "properties": {
+                    "label": { "type": "string" },
+                    "href": { "type": "string" }
+                  }
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["heading"],
+                    "properties": {
+                      "heading": { "type": "string" },
+                      "description": { "type": "string" },
+                      "image_ref": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
