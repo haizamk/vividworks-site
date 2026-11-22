@@ -39,4 +39,13 @@ return [
         'token' => env('ADMIN_TOKEN', ''),
     ],
 
+    'vividai' => [
+        'callback_token' => env('VIVIDAI_CALLBACK_TOKEN', ''),
+        'callback_max_bytes' => (int) env('VIVIDAI_CALLBACK_MAX_BYTES', 20 * 1024),
+        'design_agent_url' => env('VIVIDAI_DESIGN_AGENT_URL', ''),
+        'design_agent_header' => env('VIVIDAI_DESIGN_AGENT_HEADER', ''),
+        'design_agent_token' => env('VIVIDAI_DESIGN_AGENT_TOKEN', ''),
+        'design_agent_timeout' => (int) env('VIVIDAI_DESIGN_AGENT_TIMEOUT', 120),
+    ],
+
 ];

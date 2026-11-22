@@ -17,17 +17,16 @@ use stdClass;
  * An associative array collapses JSON objects and arrays, so it is rejected
  * with an explicit message instead of being treated as an object.
  *
- * Integration point, not wired in this slice: DesignCallbackRules::objectField()
- * already requires sitespec to be a JSON object and then accepts any object.
- * A later slice can call this validator there. The current callback prototype
- * still expects envelope schema_version 1.2. The accepted wire is
- * schema_version 1.1, with prompt_version v1.1.0 kept as a separate concept.
+ * DesignCallbackRules calls this validator for a success sitespec before it
+ * returns a callback. The envelope schema_version is 1.1. prompt_version
+ * stays on revision_metadata and is not read here.
  *
  * Technical debt:
  * TD-SITESPEC-1 Replace this walker after SD-02 names a dialect and a library.
  *   Opis 2.6.2 can load this file, and its parser defaults to draft 2020-12
  *   when $schema is absent. That evidence is not a dialect decision.
- * TD-SITESPEC-2 This validator is not called by the callback path.
+ * TD-SITESPEC-2 The callback path calls this walker. It is not a JSON Schema
+ *   library, and the dialect remains deferred.
  * TD-SITESPEC-3 OD-1 through OD-12 semantic checks are outside this class.
  */
 class SiteSpecStructuralValidator
