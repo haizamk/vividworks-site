@@ -59,7 +59,7 @@ export const pricingPlans: PricingPlan[] = [
     price: {
       display: "RM0",
       confirmed: true,
-      note: "Free Forever. Pakej ini belum dibuka.",
+      note: "Spesifikasi dirancang (Free Forever). Pakej ini belum dibuka untuk pendaftaran.",
     },
     summary: "Spesifikasi yang dirancang. Fungsi di bawah belum tersedia pada laman ini.",
     features: [

@@ -13,7 +13,7 @@ import { PageHeader } from "../components/layout/PageHeader.tsx";
 import { Seo } from "../components/seo/Seo.tsx";
 
 const description =
-  "Hantar pertanyaan melalui borang ini. Mesej disimpan pada pelayan, tetapi e-mel automatik belum diaktifkan. E-mel, telefon dan alamat rasmi masih belum disahkan.";
+  "Hantar pertanyaan melalui borang ini. Mesej disimpan pada pelayan; tiada e-mel automatik dihantar. E-mel, telefon dan alamat rasmi masih belum disahkan.";
 
 const emptyDraft: ContactDraft = {
   name: "",

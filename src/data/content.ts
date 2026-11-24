@@ -127,7 +127,7 @@ export const legalDraft = {
   label: "Draf untuk semakan",
   notice:
     "Halaman ini bukan dokumen undang-undang muktamad. Ia memerlukan kelulusan sebelum digunakan sebagai dasar atau terma rasmi. Tiada kewajipan, tempoh atau hak dicipta di sini.",
-  draftedOn: "25 Oktober 2026",
+  draftedOn: "25 November 2026",
 } as const;
 
 export const privacySections = [
@@ -164,7 +164,7 @@ export const privacySections = [
   {
     id: "hubungan",
     heading: "Hubungi",
-    body: "Saluran rasmi untuk pertanyaan privasi belum disahkan. Gunakan pemegang tempat pada halaman Hubungi Kami sehingga alamat e-mel rasmi diberikan.",
+    body: "Saluran rasmi untuk pertanyaan privasi belum disahkan. Hantar pertanyaan melalui borang Hubungi Kami; mesej disimpan pada pelayan tetapi tiada e-mel automatik dihantar sehingga alamat rasmi diberikan.",
   },
 ] as const;
 

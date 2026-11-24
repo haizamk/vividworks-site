@@ -12,7 +12,7 @@ export function IndustryShowcase() {
               Sesuai untuk Pelbagai Industri Perniagaan
             </h2>
             <p className="mt-3 text-sm leading-6 text-fp-muted sm:text-base">
-              Ikon di bawah ialah kategori umum. Tiada logo pelanggan atau testimoni dipaparkan.
+              Contoh kategori perniagaan yang biasa memerlukan laman web. Ia bukan senarai pelanggan sedia ada dan tiada testimoni dipaparkan.
             </p>
           </div>
           <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">

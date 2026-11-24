@@ -22,9 +22,7 @@ export function Footer() {
             </svg>
             <span className="text-base font-bold tracking-tight text-fp-ink">VividWorks</span>
           </Link>
-          <p className="mt-4 max-w-xs text-sm leading-6 text-fp-muted">
-            Platform AI Website Builder untuk individu dan perniagaan kecil di Malaysia. Laman ini ialah laman pemasaran.
-          </p>
+          <p className="mt-4 max-w-xs text-sm leading-6 text-fp-muted">{site.footerDescription}</p>
         </div>
         <div>
           <h2 className="text-sm font-semibold text-fp-ink">Pada halaman ini</h2>

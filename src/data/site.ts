@@ -10,9 +10,11 @@ export const site = {
   ogLocale: "ms_MY",
   year: 2026,
   description:
-    "Mulakan kehadiran digital perniagaan anda dengan vividworks.my. Jana reka bentuk website menggunakan AI, pilih template profesional dan sesuaikan kandungan melalui editor visual yang mudah digunakan.",
+    "Bina website profesional dengan AI untuk perniagaan Malaysia — tanpa kod. Laman ini memaparkan arah produk vividworks.my; pembina, editor dan penerbitan belum dibuka.",
   footerDescription:
-    "vividworks.my membantu perniagaan Malaysia merancang website profesional melalui cadangan reka bentuk AI, template dan editor visual. Laman ini ialah laman pemasaran.",
+    "Platform AI Website Builder untuk individu dan perniagaan kecil di Malaysia. Laman ini ialah laman pemasaran; tiada akaun, bayaran atau website pelanggan diproses di sini.",
+  marketingNotice:
+    "Pembina website AI, editor visual dan penerbitan belum dibuka. Butang daftar atau bina website membawa ke halaman Akan Datang sehingga platform disepadukan.",
   contact: {
     email: import.meta.env.VITE_CONTACT_EMAIL?.trim() || "",
     phone: "",

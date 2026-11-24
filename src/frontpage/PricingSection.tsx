@@ -19,7 +19,7 @@ export function PricingSection() {
               Empat pakej, satu harga yang dinyatakan
             </h2>
             <p className="mt-3 text-sm leading-6 text-fp-muted sm:text-base">
-              Starter ialah RM0, Free Forever, dan masih dirancang. Grow, Pro dan Elite belum mempunyai harga atau had. Laman ini tidak memproses bayaran.
+              Hanya Starter mempunyai harga yang dinyatakan (RM0, spesifikasi dirancang). Grow, Pro dan Elite belum mempunyai harga atau had. Laman ini tidak memproses bayaran.
             </p>
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
