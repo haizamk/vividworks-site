@@ -4,7 +4,9 @@
 **Pemilik teknikal:** Khairul Haizam  
 **Repo GitHub kanonikal:** https://github.com/haizamk/vividworks-site  
 **Repo Cursor/Origin:** khairul-haizam/vividworks-site (sumber kerja harian Cursor Cloud Agent)  
-**Head `main` semasa audit:** `b11209a` — *Align marketing copy and expand FAQs for content pass.*
+**Head `main` semasa audit:** kemas kini ikut commit terakhir (lihat §11).
+
+**Rujukan workflow produk:** [`docs/WORKFLOW-FREE-PLAN-TO-WEBSITE.md`](./WORKFLOW-FREE-PLAN-TO-WEBSITE.md)
 
 Dokumen ini merangkum apa yang berlaku dari sesi deploy GitHub (24–25 Nov 2026) hingga berhenti kerja, apa yang sudah wujud di repo dan di pelayan, serta langkah menuju **production** (`vividworks.my`). Ia **bukan** dokumen undang-undang atau spesifikasi produk muktamad.
 
@@ -216,9 +218,9 @@ curl -s https://preview.vividworks.my/api/health
 
 ## 10. Sambungan kerja esok (cadangan pertama)
 
-1. Baca fail ini + `README.md` § Deployment.
-2. Khairul beri **sekurang-kurangnya satu** input content (contoh e-mel rasmi) atau arahan “CI dulu”.
-3. Jika production menjadi keutamaan: spesifikasi DNS + sama ada prod = Coolify atau lain → kemudian scaffold workflow deploy prod.
+1. Baca fail ini + [`WORKFLOW-FREE-PLAN-TO-WEBSITE.md`](./WORKFLOW-FREE-PLAN-TO-WEBSITE.md) + `docs/f1-dan-ujian-staging-2026-11-22.md`.
+2. Khairul beri input content (e-mel, harga Grow/Pro/Elite) **atau** arahkan Fasa auth/SaaS (§13).
+3. Production marketing: DNS `vividworks.my` + pipeline (§7); production platform: Laravel + Supabase prod + terbitkan W2 dengan berhati-hati.
 
 ---
 
@@ -227,5 +229,83 @@ curl -s https://preview.vividworks.my/api/health
 | Tarikh | Versi | Perubahan |
 |--------|-------|-----------|
 | 2026-11-25 | 1.0 | Audit awal sesi 24–25 Nov; `main` @ `b11209a` |
+| 2026-11-25 | 1.1 | §12–§15: Laravel, n8n, Supabase; pautan workflow free plan |
 
 Apabila `main` bergerak, kemas kini **§1 head SHA**, **§5 commit list**, dan **§11** — atau jana `PROJECT-AUDIT-YYYY-MM-DD.md` baharu untuk sesi seterusnya.
+
+---
+
+## 12. Laravel (Fasa B1 / F1) — adakah berjaya?
+
+**Dalam repo:** **Ya, sebagai API berasingan** — bukan sebahagian laman preview pemasaran.
+
+| Aspek | Status |
+|-------|--------|
+| Laluan API | `GET/POST /api/health`, `contact`, `inquiries`, **`POST /api/ai/design-generations`**, **`POST /api/ai/design-callback`** |
+| PostgreSQL / Supabase | Migrasi `generations`, `generation_attempts`, `callback_inbox`, `generation_outbox`, dll. |
+| PHPUnit | Liputan luas F1 mock, callback, SiteSpec v1.1 (`tests/Feature/F1MockLifecycleTest.php`, `DesignCallbackTest.php`, …) |
+| Staging API | Dirujuk n8n: `https://api-staging.vividworks.my/api/ai/design-callback` |
+| Preview marketing | React masih guna **Express** (`server/`), bukan Laravel |
+| Deploy Laravel pada preview.vividworks.my | **Tidak** (artifak nginx/php-fpm dalam `deploy/` untuk konteks lain) |
+
+**Rekod ujian (22 Nov):** Ujian manual W2 (stub) + banyak senario callback dilaksanakan ke staging; workflow async **tidak diterbitkan**. Lihat `docs/f1-dan-ujian-staging-2026-11-22.md`.
+
+**Ringkas:** Backend F1 **berjaya dibina dan diuji**; **belum** disambung ke “customer join free plan” dari UI marketing.
+
+---
+
+## 13. n8n (VividAI) — adakah berjaya?
+
+Instance: **n8n.vividai.my** (MCP `n8n-vividai`).
+
+| Workflow | ID | Aktif | Fungsi | Status |
+|----------|-----|-------|--------|--------|
+| **VividAI - Design Agent** | `fg1kGKB6ciYADxu9` | **Ya** | Webhook `vividai/design-agent` → validasi → OpenRouter → SiteSpec v1.1 | **Berjaya (W1)** — sokong `package: free` |
+| **VividAI - Design Agent (Async)** | `sdbCW1olkS0QeMFf` | **Tidak** | Webhook `vividai/design-agent-async` → 202 → callback Laravel | **Draf ujian** — stub Kedai Contoh; **Call Design Agent disabled** |
+| TEMP - Auth Probe | `1qYUZKux874l2yxL` | Tidak | Ujian auth | Bukan produk |
+| My workflow | `EpoNrALDshpy2D0a` | Ya | Tidak dikaitkan vividworks F1 | Abaikan untuk handoff |
+
+**Tidak berjaya / belum siap sebagai produk pelanggan:**
+
+- W2 **belum diterbitkan** (sengaja, selepas rentetan ujian 82–118 pada 22 Nov).
+- Tiada workflow n8n untuk **pendaftaran akaun**, **billing**, atau **terbit HTML** kepada pelanggan.
+- A7 runtime test (Ajv dalam nod Code produksi) — banyak item **UNVERIFIED** dalam pelan v10/v12; bukan blocker marketing site.
+
+---
+
+## 14. Supabase — adakah berjaya?
+
+| Projek | Ref | Rantau | Status |
+|--------|-----|--------|--------|
+| **vividworks-staging** | `tnvjesekmmnvbfevlwmd` | ap-northeast-1 | **ACTIVE_HEALTHY** |
+
+**Jadual awam (snapshot 25 Nov 2026):**
+
+| Jadual | Baris (anggaran) | Peranan |
+|--------|------------------|---------|
+| `generations` | 47 | Projek penjanaan AI |
+| `generation_attempts` | 50 | Attempt + `job_id` |
+| `generation_contexts` | 47 | Konteks permintaan |
+| `callback_inbox` | 38 | Callback dari n8n |
+| `generation_outbox` | 49 | Outbox invoke |
+| `generation_audit_events` | 219 | Audit |
+| `inquiries` | 1 | Borang hubungan (staging) |
+
+**Tiada** jadual `users`, `profiles`, atau `subscriptions` dalam `public` — **pendaftaran pelanggan free plan belum wujud dalam DB**.
+
+**Kesimpulan:** Supabase staging **berjaya** sebagai DB F1 + ujian; **bukan** lagi sistem penuh pelanggan → website.
+
+---
+
+## 15. Platform production — langkah selepas marketing preview
+
+Susunan disyorkan (melangkaui §7):
+
+1. **Satu laluan data** — tentukan sama ada inquiries marketing + generations F1 sama Postgres prod atau asing.
+2. **Auth + project** — Supabase Auth atau Laravel; `project_id` milik akaun.
+3. **Sambung UI** — ganti `/akan-datang` dengan app daftar; panggil Laravel, bukan Express marketing sahaja.
+4. **n8n** — terbitkan W2 hanya selepas kelulusan + hidupkan `Call Design Agent`; elak webhook prod tanpa guard.
+5. **Renderer & editor** — SiteSpec → hosting; GrapesJS + kuota Starter.
+6. **Marketing prod** — `vividworks.my` (Coolify atau lain) selari dengan `api.*` dan n8n.
+
+Diagram terperinci: [`WORKFLOW-FREE-PLAN-TO-WEBSITE.md`](./WORKFLOW-FREE-PLAN-TO-WEBSITE.md).
