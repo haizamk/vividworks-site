@@ -92,7 +92,9 @@ Starter, Professional, and Business are proposed labels. Leave their price and f
 
 https://preview.vividworks.my is the isolated preview on the existing VPS. It is public, with no preview password.
 
-`.github/workflows/preview-deploy.yml` deploys `main` by sending the source to the server. The server rebuilds with Node.js 22, restarts only the `vividpreview` service, and restores the previous build if `http://127.0.0.1:8787/api/health` fails. The workflow needs a repository secret named `VIVIDPREVIEW_SSH_KEY`. That value is the private key stored on the server at `/root/.ssh/vividpreview_deploy`. The matching public key can only run `/home/vividpreview/bin/deploy`.
+`.github/workflows/preview-deploy.yml` deploys `main` over SSH to the Coolify VPS (`ubuntu@51.79.159.241`). It uploads `deploy/preview/vividpreview-deploy.sh`, streams a source tarball, builds the repo `Dockerfile` on the host, and runs container `vividpreview-site` on the `coolify` Docker network with Traefik labels for `preview.vividworks.my`. Releases live under `/home/ubuntu/vividpreview`; a failed container health check rolls back to the previous image. Pin the server host key in `.github/preview_known_hosts`.
+
+The repository secret `VIVIDPREVIEW_SSH_KEY` must be the full OpenSSH private key (PEM with real newlines). One-line copies still work in CI because `.github/scripts/write-ssh-key.sh` re-wraps them before `ssh` runs. The matching public key (`vividworks-coolify`) lives in `/home/ubuntu/.ssh/authorized_keys` on the server.
 
 ## Northflank
 

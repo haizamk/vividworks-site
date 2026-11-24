@@ -21,14 +21,33 @@ jobs:
           SSH_KEY: ${{ secrets.VIVIDPREVIEW_SSH_KEY }}
           HOST: 51.79.159.241
         run: |
+          set -euo pipefail
           test -n "$SSH_KEY"
           mkdir -p ~/.ssh
-          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          export SSH_KEY
+          bash .github/scripts/write-ssh-key.sh ~/.ssh/id_ed25519
           cp .github/preview_known_hosts ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_ed25519 \
+            -o IdentitiesOnly=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            "ubuntu@${HOST}" 'mkdir -p ~/bin'
+          scp -i ~/.ssh/id_ed25519 \
+            -o IdentitiesOnly=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            deploy/preview/vividpreview-deploy.sh \
+            "ubuntu@${HOST}:~/bin/vividpreview-deploy"
+          ssh -i ~/.ssh/id_ed25519 \
+            -o IdentitiesOnly=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            "ubuntu@${HOST}" 'chmod +x ~/bin/vividpreview-deploy'
           tar -czf - \
             --exclude node_modules \
             --exclude dist \
             --exclude .git \
             --exclude .env \
-            . | ssh -T -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "ubuntu@${HOST}"
+            . | ssh -T \
+            -i ~/.ssh/id_ed25519 \
+            -o IdentitiesOnly=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            "ubuntu@${HOST}" \
+            '~/bin/vividpreview-deploy'

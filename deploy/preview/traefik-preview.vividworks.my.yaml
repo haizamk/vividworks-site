@@ -1,0 +1,33 @@
+# Legacy file-provider route (host:8787). Prefer Docker labels via vividpreview-deploy.sh.
+http:
+  middlewares:
+    vividpreview-gzip:
+      compress: true
+    vividpreview-redirect-to-https:
+      redirectscheme:
+        scheme: https
+  routers:
+    vividpreview-http:
+      entryPoints:
+        - http
+      rule: Host(`preview.vividworks.my`)
+      middlewares:
+        - vividpreview-redirect-to-https
+      service: vividpreview-upstream
+      priority: 100
+    vividpreview-https:
+      entryPoints:
+        - https
+      rule: Host(`preview.vividworks.my`)
+      middlewares:
+        - vividpreview-gzip
+      service: vividpreview-upstream
+      tls:
+        certResolver: letsencrypt
+      priority: 100
+  services:
+    vividpreview-upstream:
+      loadBalancer:
+        servers:
+          -
+            url: http://10.0.1.1:8787
