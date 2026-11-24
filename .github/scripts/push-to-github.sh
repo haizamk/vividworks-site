@@ -6,7 +6,12 @@ set -euo pipefail
 
 REMOTE_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/haizamk/vividworks-site.git"
 
-git remote get-url github >/dev/null 2>&1 || git remote add github "$REMOTE_URL"
+if git remote get-url github >/dev/null 2>&1; then
+  git remote set-url github "$REMOTE_URL"
+else
+  git remote add github "$REMOTE_URL"
+fi
+
 git push -u github main
 current="$(git branch --show-current)"
 if [[ "$current" != "main" ]]; then
