@@ -88,37 +88,38 @@ Optional environment overrides are listed in `.env.example`. Copy it to `.env` o
 
 Starter, Professional, and Business are proposed labels. Leave their price and features as “Akan disahkan” until an approved specification replaces them. Do not describe FREE as free for life unless that is explicitly confirmed.
 
-## Preview server
+## Deployment (GitHub + Coolify)
 
-https://preview.vividworks.my is the isolated preview on the existing VPS. It is public, with no preview password.
+Hosting uses **GitHub** as the deployment source and a **Coolify VPS** for the live preview. **Northflank is not used** and is no longer part of this project.
 
-`.github/workflows/preview-deploy.yml` deploys `main` over SSH to the Coolify VPS (`ubuntu@51.79.159.241`). It uploads `deploy/preview/vividpreview-deploy.sh`, streams a source tarball, builds the repo `Dockerfile` on the host, and runs container `vividpreview-site` on the `coolify` Docker network with Traefik labels for `preview.vividworks.my`. Releases live under `/home/ubuntu/vividpreview`; a failed container health check rolls back to the previous image. Pin the server host key in `.github/preview_known_hosts`.
+### GitHub
 
-The repository secret `VIVIDPREVIEW_SSH_KEY` must be the full OpenSSH private key (PEM with real newlines). One-line copies still work in CI because `.github/scripts/write-ssh-key.sh` re-wraps them before `ssh` runs. The matching public key (`vividworks-coolify`) lives in `/home/ubuntu/.ssh/authorized_keys` on the server.
-
-## Northflank
-
-`northflank.json` is a template for one project in Asia Southeast (Singapore), one PostgreSQL 16 addon, and one combined service. The service builds `Dockerfile` from Git and serves the site on port 8080. The template aliases the addon `POSTGRES_URI` to `DATABASE_URL`, then restarts the service after the database and the first deployment are running.
-
-Northflank shows each template node, build, and deployment as it runs. This repository cannot sign in to Northflank for you. The public plan catalog has no free tier: the site uses `nf-compute-10`, the database uses `nf-compute-20`, and image builds use `nf-compute-400-16` while a build is running.
-
-1. Create a Northflank account and a team API token. In the environment used by Cursor, set `NORTHFLANK_API_TOKEN` to that token. `.cursor/mcp.json` points at `https://mcp.northflank.com/mcp` and reads the token from the environment. Do not commit the token.
-2. Put this project on GitHub, GitLab, or Bitbucket. Use the **Create repo** control in Cursor if this project does not have one yet. Northflank builds from that repository, not from the temporary project remote.
-3. In Northflank, create a template and paste `northflank.json`, or enable GitOps on that file. Before you run it, set these template arguments. Store `ADMIN_TOKEN` as an argument override so the generated value stays in Northflank and out of Git:
-
-   - `REPOSITORY_URL`: the HTTPS URL of the Git repository
-   - `VCS_PROVIDER`: `github`, `gitlab`, or `bitbucket`
-   - `ADMIN_TOKEN`: `${fn.randomSecret(32)}`
-
-4. Run the template and follow the node progress in the Northflank run view. The public site URL appears on the `vividworks-web` port after the service is running.
-
-`GET /api/health` is the startup and readiness check. Read stored inquiries with the generated token:
+Canonical remote: [github.com/haizamk/vividworks-site](https://github.com/haizamk/vividworks-site). Pushes from Cursor’s project remote can be mirrored with:
 
 ```bash
-curl -H "Authorization: Bearer $ADMIN_TOKEN" https://<your-service>/api/inquiries
+bash .github/scripts/push-to-github.sh
 ```
 
-If the service logs a TLS error while connecting to Postgres, set `DATABASE_SSL=false` on the secret group and restart the service. Do not commit `ADMIN_TOKEN`, `DATABASE_URL`, `NORTHFLANK_API_TOKEN`, or `data/inquiries.json`.
+That script needs `GITHUB_TOKEN` (classic PAT with `repo` and `workflow` scopes). It pushes `main`, and the current branch when it is not `main`.
+
+### Preview server
+
+https://preview.vividworks.my is the public marketing preview on the Coolify host. There is no preview password.
+
+On every push to `main`, `.github/workflows/preview-deploy.yml` SSHs to `ubuntu@51.79.159.241`, uploads `deploy/preview/vividpreview-deploy.sh`, streams a source tarball, builds the repo `Dockerfile` on the host, and runs container `vividpreview-site` on the `coolify` Docker network with Traefik labels for `preview.vividworks.my`. Releases live under `/home/ubuntu/vividpreview`; a failed container health check rolls back to the previous image. The server host key is pinned in `.github/preview_known_hosts`.
+
+The GitHub repository secret `VIVIDPREVIEW_SSH_KEY` must be the full OpenSSH private key (PEM with real newlines). One-line copies still work in CI because `.github/scripts/write-ssh-key.sh` re-wraps them before `ssh` runs. The matching public key (`vividworks-coolify`) lives in `/home/ubuntu/.ssh/authorized_keys` on the server.
+
+First-time host setup: `deploy/preview/bootstrap-server.sh` on the VPS.
+
+Preview inquiries are stored in the container filesystem (`storage: file` in `/api/health`) unless you add `DATABASE_URL` to the container environment later. Do not commit `ADMIN_TOKEN`, `DATABASE_URL`, or `data/inquiries.json`.
+
+`GET /api/health` is the deploy health check. When `ADMIN_TOKEN` is set on the server, list inquiries with:
+
+```bash
+curl -s https://preview.vividworks.my/api/health
+curl -H "Authorization: Bearer $ADMIN_TOKEN" https://preview.vividworks.my/api/inquiries
+```
 
 ## Future actions
 
