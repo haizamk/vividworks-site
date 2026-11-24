@@ -261,7 +261,7 @@ Instance: **n8n.vividai.my** (MCP `n8n-vividai`).
 | Workflow | ID | Aktif | Fungsi | Status |
 |----------|-----|-------|--------|--------|
 | **VividAI - Design Agent** | `fg1kGKB6ciYADxu9` | **Ya** | Webhook `vividai/design-agent` → validasi → OpenRouter → SiteSpec v1.1 | **Berjaya (W1)** — sokong `package: free` |
-| **VividAI - Design Agent (Async)** | `sdbCW1olkS0QeMFf` | **Tidak** | Webhook `vividai/design-agent-async` → 202 → callback Laravel | **Draf ujian** — stub Kedai Contoh; **Call Design Agent disabled** |
+| **VividAI - Design Agent (Async)** | `sdbCW1olkS0QeMFf` | **Tidak** | Webhook `vividai/design-agent-async` → 202 → callback Laravel | **Draf ujian** — stub Kedai Contoh; **Call Design Agent disabled** — butiran §8 dalam [`WORKFLOW-FREE-PLAN-TO-WEBSITE.md`](./WORKFLOW-FREE-PLAN-TO-WEBSITE.md) |
 | TEMP - Auth Probe | `1qYUZKux874l2yxL` | Tidak | Ujian auth | Bukan produk |
 | My workflow | `EpoNrALDshpy2D0a` | Ya | Tidak dikaitkan vividworks F1 | Abaikan untuk handoff |
 
