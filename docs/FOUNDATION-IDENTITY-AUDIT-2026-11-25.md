@@ -2,7 +2,7 @@
 
 **Tarikh:** 25 November 2026 (UTC)  
 **Kemas kini terakhir:** 25 November 2026 — keputusan pemilik **D-EMAIL-V** (APPROVED)  
-**Repo:** `vividworks-site` @ `main` → `9f0a2f7` (laporan audit pertama: `466c518`; asas sebelum audit: `12aa29f`)  
+**Repo:** `vividworks-site` @ `main` — snapshot kod audit: `12aa29f`; laporan audit diterbitkan: `466c518`  
 **Skop:** AUDIT & DESIGN ONLY — tiada migrasi, ubah kod, SQL, n8n, deploy, atau push dilakukan dalam sesi ini.  
 **Input rancangan:** `FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md` — **tidak dijumpai** dalam repo atau upload sesi ini; bandingan dengan v1.0 perlu dilakukan semula apabila fail itu dilampirkan.
 
