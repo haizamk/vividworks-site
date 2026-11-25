@@ -2,7 +2,7 @@
 
 **Tarikh:** 25 November 2026 (UTC)  
 **Kemas kini terakhir:** 25 November 2026 — keputusan pemilik **D-EMAIL-V** (APPROVED)  
-**Repo:** `vividworks-site` @ `main` → `12aa29f` (*Document n8n W2 async deep-dive in workflow handoff doc.*)  
+**Repo:** `vividworks-site` @ `main` → `466c518` (*docs: Foundation & Identity audit report — commit terdahulu `12aa29f`*)  
 **Skop:** AUDIT & DESIGN ONLY — tiada migrasi, ubah kod, SQL, n8n, deploy, atau push dilakukan dalam sesi ini.  
 **Input rancangan:** `FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md` — **tidak dijumpai** dalam repo atau upload sesi ini; bandingan dengan v1.0 perlu dilakukan semula apabila fail itu dilampirkan.
 
@@ -238,7 +238,7 @@ erDiagram
 3. **Akses fungsi SaaS terhad** untuk unverified: tidak boleh **mencipta projek** dan tidak boleh memanggil **AI generation** (`POST /api/ai/design-generations` atau laluan setara fasa akan datang).
 4. Pengguna **wajib mengesahkan e-mel** sebelum cipta projek atau gunakan AI generation.
 5. Sediakan **resend verification email** (endpoint dedikasi, rate-limited).
-6. **Laravel** ialah authority status pengesahan: model `User` mengimplement `Illuminate\Contracts\Auth\MustVerifyEmail`; semakan melalui middleware `verified` (ataan setara) pada route/projekt/policy berkaitan — bukan Supabase Auth.
+6. **Laravel** ialah authority status pengesahan: model `User` mengimplement `Illuminate\Contracts\Auth\MustVerifyEmail`; semakan melalui middleware `verified` (ataupun setara) pada route/project/policy berkaitan — bukan Supabase Auth.
 
 **SaaS terhad (contoh skop guard untuk unverified):**
 
