@@ -80,10 +80,10 @@ Legend: ✅ Confirmed | ⚠️ Gap / action required | ❌ Blocker | ➖ Not req
 | Item | Status | Notes |
 |------|--------|-------|
 | Original archive ingested (`…-ORIGINAL-2026-11-25.md`) | ✅ | Verbatim (Gate 2) |
-| Canonical **v1.0.1** draft in repo | ⚠️ | **Pending Gate 3** owner approval — not implementation authority |
+| Canonical **v1.0.1** in repo | ✅ | **Gate 3 approved** (2026-11-27) — architecture authority; **Gate 5** still required for code |
 | Condensed v1.0 (superseded banner) | ✅ | Historical only |
 | I0 decision record (+ appended decisions) | ✅ | Nine rows preserved; D-PHASE-SUB, D-ONBOARD-PHASE, D-SUB-SCHEMA |
-| Owner I0 formal sign-off | ⚠️ | Pending (Gate 4) |
+| Owner I0 formal sign-off | ✅ | **Gate 4 approved** (2026-11-27) |
 | **I2 blockers (do not block I1):** D-PROJECT-COL, D-TENANT-RES | ⚠️ | OPEN — required before I2 migrations |
 
 Documentation existing **does not** authorize I1 implementation (requires **Gate 5**).

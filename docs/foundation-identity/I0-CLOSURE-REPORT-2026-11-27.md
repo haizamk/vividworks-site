@@ -4,7 +4,7 @@
 **Repository:** `haizamk/vividworks-site`  
 **Prepared by:** Cursor Cloud Agent  
 **Audience:** Khairul, Guru  
-**Verdict:** **I0 documentation package ready for owner review** — implementation **not** authorized.
+**Verdict:** **I0 formal documentation closure complete (Gate 4)** — **implementation not authorized** (Gate 5 pending).
 
 ---
 
@@ -17,13 +17,13 @@ I0 Formal Documentation Closure consolidates owner-approved Foundation & Identit
 | Artifact | Path |
 |----------|------|
 | Original archive (immutable) | [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0-ORIGINAL-2026-11-25.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0-ORIGINAL-2026-11-25.md) |
-| Canonical draft v1.0.1 | [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md) — **pending Gate 3** |
+| Canonical architecture v1.0.1 | [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md) — **Gate 3 approved** |
 | Condensed v1.0 (superseded) | [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md) |
 | I0 Decision Record | [`I0-DECISION-RECORD-2026-11-27.md`](./I0-DECISION-RECORD-2026-11-27.md) |
 | I1 Readiness Checklist | [`I1-READINESS-CHECKLIST-2026-11-27.md`](./I1-READINESS-CHECKLIST-2026-11-27.md) |
 | This closure report | [`I0-CLOSURE-REPORT-2026-11-27.md`](./I0-CLOSURE-REPORT-2026-11-27.md) |
 
-**Update (Gate 2, 2026-11-27):** The verified 25 November original architecture is **ingested verbatim** into the repository. **v1.0.1** is **drafted** for reconciliation; **Gate 3** owner approval is required before it is canonical for implementation. **I0 formal sign-off (Gate 4)** remains pending.
+**Update (2026-11-27):** Original architecture ingested verbatim; **v1.0.1** **Gate 3 approved** (Khairul); **I0 formal sign-off Gate 4 approved** (Khairul). Guru documentation review: PR #7. **Gate 5** and **I1 code** remain **not authorized**.
 
 ---
 
@@ -77,11 +77,11 @@ All **nine** decisions are recorded in [`I0-DECISION-RECORD-2026-11-27.md`](./I0
 
 | Ready | Pending |
 |-------|---------|
-| Repo F1 baseline | **Gate 4:** I0 formal sign-off (not approved) |
+| Repo F1 baseline | **A4.41** read-only staging prep |
 | Staging schema matches repo | Staging mail verification test |
 | Production F1 empty baseline (A4.39) | Staging backup proof |
 | I0 Decision Record committed (nine rows + append) | Staging DB role vs RLS note |
-| v1.0.1 draft in repo (canonical architecture **after Gate 3**) | **Gate 3:** Khairul approval of v1.0.1 pending |
+| v1.0.1 canonical architecture (**Gate 3** approved) | **Gate 5:** I1 implementation not authorized |
 | Superseded condensed v1.0 retained with banner | **Gate 5:** I1 implementation **not authorized**; **I2 not authorized** |
 | Checklist published | Owner review of this closure report |
 
@@ -111,10 +111,12 @@ Detail: [`I1-READINESS-CHECKLIST-2026-11-27.md`](./I1-READINESS-CHECKLIST-2026-1
 
 | Gate | Status |
 |------|--------|
-| I0 documentation complete | ✅ Submitted for review |
-| I0 owner approval | ⏳ **Pending Khairul** |
-| I1 implementation authorized | ❌ **Not until separate approval** |
+| Gate 2 — documentation package | ✅ Merged to `main` (PR #7) |
+| Gate 3 — v1.0.1 canonical architecture | ✅ **Approved** — Khairul, 2026-11-27 |
+| Gate 4 — I0 formal sign-off | ✅ **Approved** — Khairul, 2026-11-27 |
+| Gate 5 — I1 implementation | ❌ **Not authorized** |
+| I2 implementation | ❌ **Not authorized** |
 
 ---
 
-**STOP** — await review before I1.
+**Next:** [`A4.41-I1-PREP-READONLY-2026-11-27.md`](./A4.41-I1-PREP-READONLY-2026-11-27.md), then explicit **Gate 5** before I1 code.
