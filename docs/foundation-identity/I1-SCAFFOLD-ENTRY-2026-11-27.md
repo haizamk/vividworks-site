@@ -19,10 +19,13 @@
 
 ---
 
+## Staging migrate
+
+See [A4.63](./A4.63-STAGING-I1-MIGRATE-2026-11-27.md) — applied on Coolify after grants to `laravel_staging`.
+
 ## Not done in this scaffold
 
 - Password reset controllers (schema only)
-- Staging `artisan migrate` until **stitch-vividworks** deploy
 - I2 tenants / projects / subscriptions
 - F1 + `verified` middleware (I3)
 
