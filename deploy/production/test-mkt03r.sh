@@ -43,8 +43,8 @@ echo "=== workflow ref validation ==="
 assert_reject "1 workflow rejects main" "main"
 assert_reject "2 workflow rejects raw SHA" "8cb65814127ff437c27d428d728322a19335578d"
 assert_reject "3 workflow rejects short SHA" "8cb6581"
-assert_reject "workflow rejects arbitrary tag" "v1.0.0"
-assert_accept_format "4 workflow accepts tag format" "marketing-prod/v2026.11.27.1"
+assert_reject "4 workflow rejects arbitrary tag" "v1.0.0"
+assert_accept_format "5 workflow accepts tag format" "marketing-prod/v2026.11.27.1"
 
 echo "=== tag checkout (temporary git repo) ==="
 TEMP_REPO="$(mktemp -d)"
@@ -65,15 +65,15 @@ git -C "$TEMP_REPO" checkout -q "refs/tags/$TEST_TAG"
 checkout_sha="$(git -C "$TEMP_REPO" rev-parse HEAD)"
 git -C "$TEMP_REPO" checkout -q "$orig_head"
 if [[ "$sha_at_tag" == "$checkout_sha" ]]; then
-  pass_test "5 checkout SHA matches tag in temp repo ($checkout_sha)"
+  pass_test "6 checkout SHA matches tag in temp repo ($checkout_sha)"
 else
-  fail_test "5 checkout SHA mismatch tag=$sha_at_tag checkout=$checkout_sha"
+  fail_test "6 checkout SHA mismatch tag=$sha_at_tag checkout=$checkout_sha"
 fi
 git -C "$TEMP_REPO" tag -d "$TEST_TAG" >/dev/null
 if ! git -C "$TEMP_REPO" show-ref --tags 2>/dev/null | grep -q "$TEST_TAG"; then
-  pass_test "temp tag cleaned up"
+  pass_test "7 temp tag cleaned up"
 else
-  fail_test "temp tag still present"
+  fail_test "7 temp tag still present"
 fi
 
 echo "=== rollback logic (mock docker) ==="
@@ -100,12 +100,12 @@ case "$cmd" in
     exit 0
     ;;
   inspect)
-    if [[ "$*" == *"Config.Image"* ]] || [[ "$*" == *format* ]]; then
-      if [[ "${MOCK_HAS_CONTAINER:-}" == "1" ]]; then
-        echo 'vividworks-prod:good'
-        exit 0
-      fi
+    if [[ "${MOCK_HAS_CONTAINER:-}" != "1" ]]; then
       exit 1
+    fi
+    if [[ "$*" == *"Config.Image"* ]] || [[ "$*" == *"format"* ]]; then
+      echo 'vividworks-prod:good'
+      exit 0
     fi
     exit 0
     ;;
@@ -151,8 +151,16 @@ mkdir -p "$VIVIDWORKS_PROD_ROOT/releases/old" "$VIVIDWORKS_PROD_ROOT/releases/ne
 # shellcheck disable=SC1091
 source "$ROOT/deploy/production/vividworks-prod-deploy.sh"
 
+capture_previous_image_like_main() {
+  previous_image=""
+  if sudo docker inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
+    previous_image="$(sudo docker inspect "$CONTAINER_NAME" --format '{{.Config.Image}}')"
+  fi
+  export previous_image
+}
+
 export DATA_VOLUME=vividworks-prod-inquiries-data-test
-MOCK_HAS_CONTAINER=1
+export MOCK_HAS_CONTAINER=1
 previous_image="vividworks-prod:good"
 
 # CURRENT: successful deployment updates symlink
@@ -161,12 +169,12 @@ capture_previous_current
 if run_container "vividworks-prod:good"; then
   container_health && set_current_release "$VIVIDWORKS_PROD_ROOT/releases/new"
   if [[ "$(readlink -f "$CURRENT")" == "$(readlink -f "$VIVIDWORKS_PROD_ROOT/releases/new")" ]]; then
-    pass_test "6 CURRENT points to new release after successful deploy"
+    pass_test "8 CURRENT points to new release after successful deploy"
   else
-    fail_test "6 CURRENT not updated to new release"
+    fail_test "8 CURRENT not updated to new release"
   fi
 else
-  fail_test "6 run_container for successful deploy"
+  fail_test "8 run_container for successful deploy"
 fi
 
 # CURRENT: rollback restores previous (failed deploy must not advance CURRENT to new)
@@ -177,18 +185,18 @@ if run_container "vividworks-prod:bad-health"; then
   if ! container_health; then
     if rollback "$previous_image"; then
       if [[ "$(readlink -f "$CURRENT")" == "$(readlink -f "$VIVIDWORKS_PROD_ROOT/releases/old")" ]]; then
-        pass_test "7 CURRENT restored after rollback success"
+        pass_test "9 CURRENT restored after rollback success"
       else
-        fail_test "7 CURRENT not restored (got $(readlink -f "$CURRENT"))"
+        fail_test "9 CURRENT not restored (got $(readlink -f "$CURRENT"))"
       fi
     else
-      fail_test "7 rollback failed"
+      fail_test "9 rollback failed"
     fi
   else
-    fail_test "7 expected unhealthy container"
+    fail_test "9 expected unhealthy container"
   fi
 else
-  fail_test "7 bad-health run"
+  fail_test "9 bad-health run"
 fi
 
 # No previous CURRENT
@@ -196,63 +204,78 @@ rm -f "$CURRENT"
 capture_previous_current
 if restore_current_symlink >/dev/null 2>&1; then
   if [[ ! -L "$CURRENT" ]]; then
-    pass_test "8 no previous CURRENT handled explicitly"
+    pass_test "10 no previous CURRENT handled explicitly"
   else
-    fail_test "8 unexpected CURRENT after no-previous restore"
+    fail_test "10 unexpected CURRENT after no-previous restore"
   fi
 else
-  fail_test "8 no previous CURRENT restore returned error"
+  fail_test "10 no previous CURRENT restore returned error"
 fi
 
 # docker run failure + rollback
+export MOCK_HAS_CONTAINER=1
 previous_image="vividworks-prod:good"
-MOCK_HAS_CONTAINER=1
 ln -sfn "$VIVIDWORKS_PROD_ROOT/releases/old" "$CURRENT"
 capture_previous_current
 rm -f "$CURRENT" # simulate deploy not yet committed
 if ! run_container "vividworks-prod:bad-run"; then
   if attempt_rollback "docker run failure"; then
-    pass_test "9 docker run failure triggers rollback with CURRENT restore"
+    pass_test "11 docker run failure triggers rollback with CURRENT restore"
   else
-    fail_test "9 rollback after docker run failure"
+    fail_test "11 rollback after docker run failure"
   fi
 else
-  fail_test "9 expected bad-run failure"
+  fail_test "11 expected bad-run failure"
 fi
 
-previous_image=""
-if ! attempt_rollback "docker run failure"; then
-  pass_test "10 no previous image explicit failure"
+export MOCK_HAS_CONTAINER=0
+capture_previous_image_like_main
+if [[ -n "$previous_image" ]]; then
+  fail_test "12 previous_image should be empty when container absent (got '${previous_image}')"
+elif ! attempt_rollback "docker run failure"; then
+  pass_test "12 no previous image when container absent (inspect fail-closed)"
 else
-  fail_test "10 should fail without previous image"
+  fail_test "12 should fail without previous image"
 fi
 
 if [[ -f /tmp/mkt03r-mount-ok ]]; then
-  pass_test "11 docker run uses named volume mount ${DATA_VOLUME}:/app/data"
+  pass_test "13 docker run uses named volume mount ${DATA_VOLUME}:/app/data"
 else
-  fail_test "11 volume mount assertion missing"
+  fail_test "13 volume mount assertion missing"
 fi
 
 unset MOCK_VOLUME_FAIL
+export MOCK_HAS_CONTAINER=1
 if ensure_data_volume; then
-  pass_test "12 ensure_data_volume succeeds"
+  pass_test "14 ensure_data_volume succeeds"
 else
-  fail_test "12 ensure_data_volume should succeed"
+  fail_test "14 ensure_data_volume should succeed"
 fi
 
 export MOCK_VOLUME_FAIL=1
 if ensure_data_volume; then
-  fail_test "13 volume create failure should abort"
+  fail_test "15 volume create failure should abort"
 else
-  pass_test "13 volume create failure fail-closed"
+  pass_test "15 volume create failure fail-closed"
 fi
+
+echo "=== live smoke (candidate + preview) ==="
+cand="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 https://marketing-prod-candidate.51-79-159-241.sslip.io/api/health || echo 000)"
+prev="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 https://preview.vividworks.my/api/health || echo 000)"
+if [[ "$cand" == "200" && "$prev" == "200" ]]; then
+  pass_test "16 live smoke candidate=$cand preview=$prev"
+else
+  fail_test "16 live smoke candidate=$cand preview=$prev"
+fi
+
 rm -f /tmp/mkt03r-docker-rm
+export MOCK_HAS_CONTAINER=1
 run_rc=0
 run_container "vividworks-prod:good" || run_rc=$?
 if [[ "$run_rc" -eq 2 ]] && [[ ! -f /tmp/mkt03r-docker-rm ]]; then
-  pass_test "15 volume failure before docker rm (no container removal)"
+  pass_test "17 volume failure before docker rm (no container removal)"
 else
-  fail_test "15 expected rc=2 without docker rm (rc=$run_rc rm=$([[ -f /tmp/mkt03r-docker-rm ]] && echo yes || echo no))"
+  fail_test "17 expected rc=2 without docker rm (rc=$run_rc rm=$([[ -f /tmp/mkt03r-docker-rm ]] && echo yes || echo no))"
 fi
 unset MOCK_VOLUME_FAIL
 
@@ -263,55 +286,55 @@ attempt_rollback() {
   return 1
 }
 export MOCK_VOLUME_FAIL=1
-MOCK_HAS_CONTAINER=1
-previous_image="vividworks-prod:good"
+export MOCK_HAS_CONTAINER=1
+capture_previous_image_like_main
 rm -f /tmp/mkt03r-docker-rm
 main_start_rc=0
 deploy_start_container_or_abort "vividworks-prod:new-fail-vol" || main_start_rc=$?
 if [[ "$main_start_rc" -eq 2 && "$MKT03R_ROLLBACK_CALLS" -eq 0 && ! -f /tmp/mkt03r-docker-rm ]]; then
-  pass_test "16 deploy_start_container_or_abort: no attempt_rollback on volume failure"
+  pass_test "18 deploy_start_container_or_abort: no attempt_rollback on volume failure"
 else
-  fail_test "16 main path (rc=$main_start_rc rollbacks=$MKT03R_ROLLBACK_CALLS rm=$([[ -f /tmp/mkt03r-docker-rm ]] && echo yes || echo no))"
+  fail_test "18 main path (rc=$main_start_rc rollbacks=$MKT03R_ROLLBACK_CALLS rm=$([[ -f /tmp/mkt03r-docker-rm ]] && echo yes || echo no))"
 fi
 unset MOCK_VOLUME_FAIL
 
 MKT03R_ROLLBACK_CALLS=0
-deploy_start_container_or_abort "vividworks-prod:bad-run" >/dev/null 2>&1 || true
-if [[ "$MKT03R_ROLLBACK_CALLS" -ge 1 ]]; then
-  pass_test "17 deploy_start_container_or_abort calls attempt_rollback on post-rm run failure"
+export MOCK_HAS_CONTAINER=1
+capture_previous_image_like_main
+if [[ "$previous_image" != "vividworks-prod:good" ]]; then
+  fail_test "19 previous_image from mock inspect expected vividworks-prod:good got '${previous_image:-<empty>}'"
 else
-  fail_test "17 attempt_rollback should run after bad-run (calls=$MKT03R_ROLLBACK_CALLS)"
+  deploy_start_container_or_abort "vividworks-prod:bad-run" >/dev/null 2>&1 || true
+  if [[ "$MKT03R_ROLLBACK_CALLS" -ge 1 ]]; then
+    pass_test "19 deploy_start_container_or_abort calls attempt_rollback on post-rm run failure (previous_image=$previous_image)"
+  else
+    fail_test "19 attempt_rollback should run after bad-run (calls=$MKT03R_ROLLBACK_CALLS)"
+  fi
 fi
 
 echo "=== rollback log messages ==="
 export MOCK_VOLUME_FAIL=1
+export MOCK_HAS_CONTAINER=1
 previous_image="vividworks-prod:good"
 rollback_log="$(rollback "vividworks-prod:good" 2>&1 || true)"
 unset MOCK_VOLUME_FAIL
 if [[ "$rollback_log" == *"not removed in this rollback attempt"* ]] \
   && [[ "$rollback_log" != *"left running"* ]]; then
-  pass_test "18 rollback volume-failure log (no unverified running claim)"
+  pass_test "20 rollback volume-failure log (no unverified running claim)"
 else
-  fail_test "18 rollback log message"
+  fail_test "20 rollback log message"
 fi
 
 export MOCK_VOLUME_FAIL=1
+export MOCK_HAS_CONTAINER=1
+capture_previous_image_like_main
 deploy_log="$(deploy_start_container_or_abort "vividworks-prod:new" 2>&1 || true)"
 unset MOCK_VOLUME_FAIL
 if [[ "$deploy_log" == *"rollback not attempted"* ]] \
   && [[ "$deploy_log" == *"before removing existing container"* ]]; then
-  pass_test "19 deploy volume-failure log distinct from rollback"
+  pass_test "21 deploy volume-failure log distinct from rollback"
 else
-  fail_test "19 deploy log message"
-fi
-
-echo "=== live smoke (candidate + preview) ==="
-cand="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 https://marketing-prod-candidate.51-79-159-241.sslip.io/api/health || echo 000)"
-prev="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 https://preview.vividworks.my/api/health || echo 000)"
-if [[ "$cand" == "200" && "$prev" == "200" ]]; then
-  pass_test "14 candidate=$cand preview=$prev"
-else
-  fail_test "14 candidate=$cand preview=$prev"
+  fail_test "21 deploy log message"
 fi
 
 echo "=== summary pass=$pass fail=$fail ==="
