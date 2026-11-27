@@ -19,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->throttleApi(null);
         $middleware->trustProxies(at: '127.0.0.1');
         $middleware->prependToGroup('api', RejectOversizedJson::class);
+        $middleware->alias([
+            'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
