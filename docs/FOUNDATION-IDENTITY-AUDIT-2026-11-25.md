@@ -222,7 +222,7 @@ erDiagram
 | Pendaftaran | **I1** | Tiada | Cipta user **unverified** (`email_verified_at` null); hantar e-mel pengesahan. **Tiada** tenant, membership, subscription, atau projek dalam I1. |
 | Onboarding SaaS | **I2** | Tiada | Selepas I1 (fasa/API berasingan): tenant peribadi + membership `owner` + subscription **`plan_code=free`**, **`status=active`**. |
 | Login / logout | I1 | Tiada | Session Sanctum sah untuk pengguna unverified; logout membatalkan token |
-| Email verification | I1 | Model sedia, tidak wajib | **D-EMAIL-V APPROVED:** wajib semua pelan; `User` implements `MustVerifyEmail`; middleware `verified` pada cipta projek & F1 invoke |
+| Email verification | I1 | Model sedia, enforcement belum dilaksanakan | **D-EMAIL-V APPROVED:** wajib semua pelan; `User` implements `MustVerifyEmail`; middleware `verified` pada cipta projek & F1 invoke |
 | Resend verification | I1 | Tiada | Endpoint berthrottle; sah hanya untuk session pengguna unverified |
 | Password reset | I1 | Config `passwords.users` sahaja | Mailer production + throttle |
 | Tenant resolution | I2+ | Tiada | Request scope konsisten; 403 jika tiada membership (**D-TENANT-RES** OPEN) |
