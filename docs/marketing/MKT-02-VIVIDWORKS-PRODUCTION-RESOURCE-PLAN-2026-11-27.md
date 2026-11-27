@@ -172,7 +172,7 @@ Frontend: `ContactPage` → `POST /api/contact` (same-origin).
 |--------|------------|---------------|
 | **F1 — File (`data/inquiries.json`)** | Sama seperti preview semasa | **Fasa go-live minimum** jika volume rendah; **risiko**: data hilang pada container replace tanpa volume |
 | **F2 — Postgres khusus marketing** | `DATABASE_URL` ke instance/schema **bukan** Supabase production tenant (cth. DB kecil pada VPS / Supabase project berasingan read-write terhad) | **Fasa 2** jika perlu durability + backup |
-| **F3 — Laravel public API** | `POST https://api.vividworks.my/api/contact` (polisi CORS, rate limit, tiada credential DB di browser) | **Fasa 3** penyatuan API; memerlukan kerja Laravel & tidak menggabungkan container marketing dengan API VM secara fizikal |
+| **F3 — Laravel public API** | `POST https://api.vividworks.my/api/contact` (polisi CORS, rate limit, tiada credential DB di browser) | **Fasa 3** penyatuan API; memerlukan kerja Laravel & tidak menggabungkan container marketing dengan **host Laravel production API** secara fizikal |
 | **F4 — Frontend → Supabase langsung** | ❌ **Tidak disyorkan** — melanggar arahan: jangan sambung frontend dengan privileged credentials | Tolak |
 
 ### Integrasi lain
