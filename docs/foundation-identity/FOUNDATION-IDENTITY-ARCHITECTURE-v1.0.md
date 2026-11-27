@@ -55,10 +55,12 @@ Detailed schema DDL and ERD were elaborated in the 25 November repo audit; **v1.
 | SPA | Stateful Sanctum cookies + CSRF; **stateful domains defined during I1** (D-SANCTUM) |
 | API tokens | Sanctum personal access tokens where needed |
 | Email verification | **Mandatory** before project create and `POST /api/ai/design-generations` (D-EMAIL-V) |
-| Onboarding | **One personal tenant auto-created on registration** (D-ONBOARD) |
+| Onboarding | **One personal tenant auto-created on registration** (D-ONBOARD) — *condensed 27 Nov wording* |
 | Generation access | **Sanctum session/token + verified email + project ownership** (D-GEN-AUTH) |
 
-Registration, login, logout, password reset, verify, and resend flows follow the acceptance criteria in `docs/FOUNDATION-IDENTITY-AUDIT-2026-11-25.md` §7.1, updated by I0 decisions above.
+> **Superseded (I0.2g):** **D-ONBOARD-PHASE** — I1 is user/auth only; I2 creates tenant, owner membership, and Free subscription. Use audit §7.1 normatif table and **v1.0.1** §7–8 for current guidance.
+
+Registration, login, logout, password reset, verify, and resend flows: see audit §7.1 **normatif** table (not the superseded 25 Nov registration row).
 
 ---
 
@@ -80,10 +82,10 @@ vw_<tenantSlug8>_<ulid>
 The following is the approved structural baseline (from audit §6; unchanged by I0 unless listed in §3–§4.1):
 
 - `users` — Laravel standard + UUID PK recommended.
-- `tenants` — `slug` unique; personal tenant on signup.
+- `tenants` — `slug` unique; *condensed 27 Nov:* “personal tenant on signup” — **superseded:** personal tenant in **I2**, not I1 registration (**D-ONBOARD-PHASE**).
 - `tenant_memberships` — roles at minimum `owner`, `admin`, `member`.
 - `projects` — `public_id` (64), `tenant_id`, FK to tenant; **no DB FK from `generations.project_id` in phase 1** (application validation first).
-- `subscriptions` — deferred to phase I4; plans align with F1 `package` enum.
+- `subscriptions` — condensed text said “deferred to I4”; **superseded:** Free entitlement in **I2** (`plan_code=free`), I4 = billing/commercial only (**D-PHASE-SUB**).
 
 See ERD and column notes in `docs/FOUNDATION-IDENTITY-AUDIT-2026-11-25.md` §6.1–6.2.
 
@@ -91,7 +93,7 @@ See ERD and column notes in `docs/FOUNDATION-IDENTITY-AUDIT-2026-11-25.md` §6.1
 
 - **Preserve** all existing staging F1 records.
 - **No backfill** and **no cleanup** as part of I0/I1 entry.
-- **Do not** document a fixed generation count; A4.40 observed **49** `generations` (2026-11-27).
+- **Do not** document a fixed generation count. A4.40 (2026-11-27) observed **49** `generations` — dated observation only.
 
 ---
 
@@ -115,15 +117,17 @@ Until I3 implementation:
 
 ## 7. Implementation phases (reference)
 
-Execution order matches audit §10:
+> **Historical table (27 Nov condensed).** **Superseded** for I1/I2 boundaries and subscription placement. **Normative:** [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md) §16–§17; [`I0-DECISION-RECORD-2026-11-27.md`](./I0-DECISION-RECORD-2026-11-27.md) (**D-ONBOARD-PHASE**, **D-PHASE-SUB**). Free entitlement in **I2**; **I4** = billing/commercial only.
 
-| Phase | Focus |
+Execution order (condensed snapshot; audit §10 updated in repo):
+
+| Phase | Focus *(condensed wording)* |
 |-------|--------|
 | **I0** | Documentation closure (this package) |
 | **I1** | Users, Sanctum, auth routes, `MustVerifyEmail`, no F1 coupling |
-| **I2** | Tenants, memberships, projects, policies |
+| **I2** | Tenants, memberships, projects, policies — *superseded detail:* includes **`subscriptions.plan_code=free`** entitlement per I0 append |
 | **I3** | F1 invoke authorization |
-| **I4–I6** | Subscriptions, SaaS UI, optional staging backfill |
+| **I4–I6** | *Condensed:* lumped “Subscriptions” — **superseded:** I4 = billing/gateways/upgrades only; Free already in I2 |
 
 See [`I1-READINESS-CHECKLIST-2026-11-27.md`](./I1-READINESS-CHECKLIST-2026-11-27.md) before staging migrations.
 

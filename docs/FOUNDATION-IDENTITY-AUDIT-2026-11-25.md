@@ -15,12 +15,12 @@
 | Identiti pelanggan | **Tiada** — model `User` skeleton, **tiada** migrasi `users`, **tiada** route auth | Laravel sebagai **satu-satunya authority** identiti; Sanctum untuk SPA + token API |
 | Multi-tenant | **Tiada** | `tenants` + `tenant_memberships` + `projects` memegang `project_id` F1 |
 | F1 `project_id` / `request_id` | **Beroperasi** sebagai string bebas; unik global `(project_id, request_id)` | Kekalkan kontrak F1; tambah **pautan** `projects` → tenant tanpa ubah state machine |
-| Staging Supabase | Snapshot histori ~47 `generations` (25 Nov); **A4.40** memerhatikan **49** — jangan angka tetap | Backfill atau “sandbox system tenant”; **D-LEGACY-47:** tiada backfill untuk kini |
+| Staging Supabase | **Semua rekod F1 staging sedia ada** dipelihara; jumlah **tidak tetap** (A4.40, 27 Nov 2026: **49** `generations` — pemerhatian bertarikh sahaja) | **D-LEGACY-47:** tiada backfill atau pembersihan untuk kini |
 | Marketing React | CTA → `/akan-datang`; env `VITE_SAAS_*` belum disambung | SPA SaaS memanggil `api.*` dengan Sanctum cookie / Bearer |
 | Pengesahan e-mel | Belum diimplementasi (`MustVerifyEmail` dikomen) | **DILULUSKAN:** wajib untuk semua pelan (Free/Grow/Pro/Elite); lihat §8.1 |
 | PHPUnit F1 | Liputan luas dalam repo | Jalankan `./vendor/bin/phpunit` pada mesin dengan Composer (VM audit ini tiada `composer`) |
 
-**Kesimpulan:** Backend F1 **matang** untuk mock/async lifecycle; lapisan Foundation & Identity **belum wujud** dalam kod atau migrasi. Implementasi identiti ialah **kerja baharu** yang perlu tidak mengganggu kontrak F1 atau 47 rekod staging.
+**Kesimpulan:** Backend F1 **matang** untuk mock/async lifecycle; lapisan Foundation & Identity **belum wujud** dalam kod atau migrasi. Implementasi identiti ialah **kerja baharu** yang perlu tidak mengganggu kontrak F1 atau **semua rekod F1 staging sedia ada** (**D-LEGACY-47**).
 
 ---
 
@@ -186,7 +186,7 @@ erDiagram
 
 > **Kemas kini 2026-11-27 — D-SUB-SCHEMA (CLOSED):** Nama lajur rasmi untuk implementasi ialah **`subscriptions.plan_code`**, bukan `plan`. Rujuk v1.0.1 §5.3.
 
-**Tiada** foreign key DB dari `generations.project_id` → `projects.public_id` pada fasa pertama (elak lock pada 47 baris legacy); gunakan **validasi aplikasi** + backfill berperingkat.
+**Tiada** foreign key DB dari `generations.project_id` → `projects.public_id` pada fasa pertama (elak lock pada rekod F1 legacy staging sedia ada); gunakan **validasi aplikasi** — **D-LEGACY-47:** tiada backfill lalai pada kemasukan I1/I2.
 
 ### 6.3 Peranan & ownership
 
@@ -213,17 +213,28 @@ erDiagram
 
 ### 7.1 Aliran yang perlu direka (tiada dalam repo)
 
-> **Kemas kini 2026-11-27 (Gate 2):** **D-ONBOARD-PHASE** — **I1** cipta pengguna sahaja (register/login/verify/reset). **I2** cipta tenant peribadi + membership `owner` + entitlement `subscriptions.plan_code=free` / `status=active` (**D-PHASE-SUB**). Bukan satu transaksi pangkalan data merentas I1 dan I2. Cipta projek hanya selepas **D-EMAIL-V**. Rujuk `docs/foundation-identity/FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md` §7–8.
+> **Normatif 2026-11-27 (Gate 2 / D-ONBOARD-PHASE):** **I1** — pengguna sahaja (register/login/verify/reset/resend). **I2** — tenant peribadi + membership `owner` + `subscriptions.plan_code=free`, `status=active` (**D-PHASE-SUB**). Fasa berasingan; **bukan** satu transaksi pangkalan data. **Cipta projek** hanya selepas e-mel disahkan (**D-EMAIL-V**); **tidak** automatik semasa pendaftaran I1 atau onboarding I2. Rujuk `docs/foundation-identity/FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md` §7–8.
 
-| Aliran | Status repo | Acceptance criteria |
-|--------|-------------|----------------------|
-| Pendaftaran | Tiada | Cipta user **unverified** (`email_verified_at` null); hantar e-mel pengesahan; *(jadual di bawah — teks 25 Nov)* cipta tenant peribadi + membership `owner` hanya selepas verify **atau** cipta tenant tetapi gate API kekal (lihat D-EMAIL-V) |
-| Login / logout | Tiada | Session Sanctum sah untuk pengguna unverified; logout membatalkan token |
-| Email verification | Model sedia, tidak wajib | **D-EMAIL-V APPROVED:** wajib semua pelan; `User` implements `MustVerifyEmail`; middleware `verified` pada cipta projek & F1 invoke |
-| Resend verification | Tiada | Endpoint berthrottle; sah hanya untuk session pengguna unverified |
-| Password reset | Config `passwords.users` sahaja | Mailer production + throttle |
-| Tenant resolution | Tiada | Request scope konsisten; 403 jika tiada membership |
-| Cipta projek + `public_id` | Tiada | `public_id` mematuhi 64 aksara; unik global; **403 atau 409** jika e-mel belum disahkan |
+#### Aliran normatif (rujuk I0 Decision Record)
+
+| Aliran | Fasa | Status repo | Acceptance criteria (semasa) |
+|--------|------|-------------|------------------------------|
+| Pendaftaran | **I1** | Tiada | Cipta user **unverified** (`email_verified_at` null); hantar e-mel pengesahan. **Tiada** tenant, membership, subscription, atau projek dalam I1. |
+| Onboarding SaaS | **I2** | Tiada | Selepas I1 (fasa/API berasingan): tenant peribadi + membership `owner` + subscription **`plan_code=free`**, **`status=active`**. |
+| Login / logout | I1 | Tiada | Session Sanctum sah untuk pengguna unverified; logout membatalkan token |
+| Email verification | I1 | Model sedia, tidak wajib | **D-EMAIL-V APPROVED:** wajib semua pelan; `User` implements `MustVerifyEmail`; middleware `verified` pada cipta projek & F1 invoke |
+| Resend verification | I1 | Tiada | Endpoint berthrottle; sah hanya untuk session pengguna unverified |
+| Password reset | I1 | Config `passwords.users` sahaja | Mailer production + throttle |
+| Tenant resolution | I2+ | Tiada | Request scope konsisten; 403 jika tiada membership (**D-TENANT-RES** OPEN) |
+| Cipta projek | I2+ (gate) | Tiada | Hanya pengguna **verified**; `public_id` mematuhi 64 aksara; unik global; **403/409** jika e-mel belum disahkan |
+
+#### Jadual audit 25 Nov 2026 (sejarah — superseded untuk pendaftaran/tenant)
+
+Teks asal dikekalkan sebagai bukti audit. **Jangan** ikut alternatif “tenant selepas verify **atau** tenant awal + gate API” — digantikan oleh jadual normatif di atas.
+
+| Aliran | Status repo | Acceptance criteria *(audit 25 Nov — SUPERSEDED)* |
+|--------|-------------|---------------------------------------------------|
+| Pendaftaran | Tiada | Cipta user **unverified** (`email_verified_at` null); hantar e-mel pengesahan; cipta tenant peribadi + membership `owner` hanya selepas verify **atau** cipta tenant tetapi gate API kekal (lihat D-EMAIL-V) |
 
 ---
 
@@ -283,7 +294,7 @@ Snapshot histori (`docs/PROJECT-AUDIT-2026-11-24.md` §14): ~47 generations pada
 |----------|---------|----------|
 | **Disyorkan (konservatif)** | Cipta `tenants.slug = legacy-staging-test` + projek sintetik hanya untuk `project_id` yang mahu diuji end-to-end; biarkan selebihnya tanpa baris `projects` | Tiada sentuh `generations` |
 | **Backfill penuh** | Skrip baca distinct `project_id` dari staging → cipta `projects` + tenant sistem | Backup snapshot Supabase sebelum skrip |
-| **Production** | Jangan salin 47 baris ke production DB | N/A |
+| **Production** | Jangan salin rekod F1 staging ke production DB | N/A |
 
 **Ujian staging khas:** Pasangan 64×`a` + 100×`b` dan generation `5fb6e47c-...` **dilarang** diguna semula (`f1-dan-ujian-staging`).
 

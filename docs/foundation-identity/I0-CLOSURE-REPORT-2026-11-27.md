@@ -31,10 +31,10 @@ I0 Formal Documentation Closure consolidates owner-approved Foundation & Identit
 
 | Component | Assessment | Evidence |
 |-----------|------------|----------|
-| Repository and HEAD | **Confirmed** | `main` @ `3fc402a…` |
+| Repository baseline (A4.40 assessment) | **Confirmed** | `main` @ `3fc402a…` at the I0 prep assessment point; **historical baseline, not the current working-branch HEAD**. |
 | Five F1 migrations | **Confirmed** | Repo + staging DB |
 | Identity tables not present | **Confirmed** | A4.39 + A4.40 |
-| Staging F1 data | **Confirmed** | Live counts; **49** generations (not a fixed doc number) |
+| Staging F1 data | **Confirmed** | Preserve all existing records; A4.40 (2026-11-27) observed **49** `generations` (dated, not fixed) |
 | API health and PostgreSQL | **Confirmed** | Staging health 200; production per A4.39 |
 | Staging environment and SMTP | **Gap** | Host `.env` not read in A4.40 — see I1 checklist |
 | Staging backup | **Gap** | Not verified in A4.40 — required before I1 migrate |
@@ -47,7 +47,7 @@ I0 Formal Documentation Closure consolidates owner-approved Foundation & Identit
 
 ### A. Staging record counts
 
-Documentation must **not** hard-code **47** generations. **D-LEGACY-47** now reads: preserve all staging F1 data; A4.40 observed **49** generations.
+Documentation must **not** hard-code generation counts. **D-LEGACY-47:** preserve all existing staging F1 records; no backfill or cleanup. A4.40 (2026-11-27) observed **49** `generations` — **dated observation only**.
 
 ### B. RLS enabled, no policies
 
@@ -73,13 +73,17 @@ All **nine** decisions are recorded in [`I0-DECISION-RECORD-2026-11-27.md`](./I0
 
 ## 5. I1 readiness snapshot
 
+**Normative sources:** [`I0-DECISION-RECORD-2026-11-27.md`](./I0-DECISION-RECORD-2026-11-27.md) (binding owner decisions). Architecture: draft [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md) (**Gate 3 pending** — not approved). [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md) is **superseded historical** condensed text only.
+
 | Ready | Pending |
 |-------|---------|
-| Repo F1 baseline | Owner sign-off on I0 |
+| Repo F1 baseline | **Gate 4:** I0 formal sign-off (not approved) |
 | Staging schema matches repo | Staging mail verification test |
 | Production F1 empty baseline (A4.39) | Staging backup proof |
-| Decisions locked in v1.0 + I0 record | Staging DB role vs RLS note |
-| Checklist published | I1 implementation checkpoint approval |
+| I0 Decision Record committed (nine rows + append) | Staging DB role vs RLS note |
+| v1.0.1 draft in repo (canonical architecture **after Gate 3**) | **Gate 3:** Khairul approval of v1.0.1 pending |
+| Superseded condensed v1.0 retained with banner | **Gate 5:** I1 implementation **not authorized**; **I2 not authorized** |
+| Checklist published | Owner review of this closure report |
 
 Detail: [`I1-READINESS-CHECKLIST-2026-11-27.md`](./I1-READINESS-CHECKLIST-2026-11-27.md).
 
@@ -98,7 +102,7 @@ Detail: [`I1-READINESS-CHECKLIST-2026-11-27.md`](./I1-READINESS-CHECKLIST-2026-1
 ## 7. Recommended next step after approval
 
 1. **Khairul / Guru:** Review and approve this I0 package (or request edits).  
-2. **Optional checkpoint:** **A4.41** or **I1-prep** — read-only staging host env **presence** + backup verification (no secrets in logs).  
+2. **Checkpoint (recommended):** [`A4.41-I1-PREP-READONLY-2026-11-27.md`](./A4.41-I1-PREP-READONLY-2026-11-27.md) — read-only staging mail, runtime, migrate status, backup, DB role (no secrets in logs).  
 3. **Open I1 implementation** only with explicit **I1 checkpoint** approval after mail + backup gaps are acceptable.
 
 ---

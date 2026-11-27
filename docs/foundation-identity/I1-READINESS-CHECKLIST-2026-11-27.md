@@ -26,7 +26,7 @@ Legend: ✅ Confirmed | ⚠️ Gap / action required | ❌ Blocker | ➖ Not req
 | Five Laravel migrations on staging | ✅ | Same names as repo; batch 1+2 split only |
 | Eight F1 tables present | ✅ | |
 | Identity tables absent | ✅ | Expected pre-I1 |
-| Legacy F1 data preserved | ✅ | **49** generations (count may grow); no cleanup per D-LEGACY-47 |
+| Legacy F1 data preserved | ✅ | Preserve **all existing** staging F1 records; **no backfill**, **no cleanup** (**D-LEGACY-47**). A4.40 (2026-11-27) observed **49** `generations` — **dated observation only**, not a fixed current count. |
 | Unexpected migration drift | ✅ | None observed |
 
 ---
@@ -112,7 +112,7 @@ Documentation existing **does not** authorize I1 implementation (requires **Gate
 ## 9. Recommended actions before I1 implementation checkpoint
 
 1. **Owner:** Approve [`I0-CLOSURE-REPORT-2026-11-27.md`](./I0-CLOSURE-REPORT-2026-11-27.md).
-2. **Ops (read-only then approved):** Staging env presence scan — mail vars **present**; send test verification mail.
+2. **Ops (read-only then approved):** Verify the required staging mail variables are **present**, then perform a verification-email **delivery test**.
 3. **Ops:** Staging DB backup/snapshot immediately before first I1 migration on staging.
 4. **Ops:** Record staging Laravel DB username and whether role bypasses RLS (compare to A4.40 `postgres` session note).
 5. **Engineering:** Open **I1 implementation** branch only after steps 1–3 are acceptable.
