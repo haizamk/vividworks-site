@@ -11,6 +11,7 @@
 | [`I0-CLOSURE-REPORT-2026-11-27.md`](./I0-CLOSURE-REPORT-2026-11-27.md) | I0 closure (**Gate 4 approved**) |
 | [`I1-READINESS-CHECKLIST-2026-11-27.md`](./I1-READINESS-CHECKLIST-2026-11-27.md) | Pre–I1 staging gates (I2 blockers listed separately) |
 | [`A4.41-I1-PREP-READONLY-2026-11-27.md`](./A4.41-I1-PREP-READONLY-2026-11-27.md) | Read-only staging prep before Gate 5 |
+| [`A4.41-I1-PREP-REPORT-TEMPLATE-2026-11-27.md`](./A4.41-I1-PREP-REPORT-TEMPLATE-2026-11-27.md) | **Isi** selepas run A4.41 |
 
 Audit (detail + dated clarifications): [`../FOUNDATION-IDENTITY-AUDIT-2026-11-25.md`](../FOUNDATION-IDENTITY-AUDIT-2026-11-25.md)
 
