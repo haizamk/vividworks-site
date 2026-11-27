@@ -79,9 +79,25 @@ Legend: ✅ Confirmed | ⚠️ Gap / action required | ❌ Blocker | ➖ Not req
 
 | Item | Status | Notes |
 |------|--------|-------|
-| `FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md` in repo | ✅ | I0 closure package |
-| I0 decision record | ✅ | Nine decisions including D-LEGACY-47 wording |
-| Owner I0 sign-off | ⚠️ | Pending after Guru/Khairul review |
+| Original archive ingested (`…-ORIGINAL-2026-11-25.md`) | ✅ | Verbatim (Gate 2) |
+| Canonical **v1.0.1** draft in repo | ⚠️ | **Pending Gate 3** owner approval — not implementation authority |
+| Condensed v1.0 (superseded banner) | ✅ | Historical only |
+| I0 decision record (+ appended decisions) | ✅ | Nine rows preserved; D-PHASE-SUB, D-ONBOARD-PHASE, D-SUB-SCHEMA |
+| Owner I0 formal sign-off | ⚠️ | Pending (Gate 4) |
+| **I2 blockers (do not block I1):** D-PROJECT-COL, D-TENANT-RES | ⚠️ | OPEN — required before I2 migrations |
+
+Documentation existing **does not** authorize I1 implementation (requires **Gate 5**).
+
+---
+
+## 7b. I1-only blockers (vs I2)
+
+| I1 blocker | I2-only (not I1) |
+|------------|------------------|
+| Staging mail + verification test | D-PROJECT-COL |
+| Staging DB backup before migrate | D-TENANT-RES |
+| Gate 5 I1 implementation | `subscriptions` / full onboarding DDL |
+| Sanctum stateful domains (I1 config) | Project column name in migrations |
 
 ---
 

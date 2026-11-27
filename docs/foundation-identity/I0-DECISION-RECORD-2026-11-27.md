@@ -26,6 +26,27 @@ This record is **normative** for implementation phases I1 onward. It does **not*
 
 ---
 
+## Additional approved decisions (post–I0 closure)
+
+Approved by Khairul. These entries **do not modify** the nine rows in **Decision summary** above.
+
+| ID | Status | Decision |
+|----|--------|----------|
+| **D-PHASE-SUB** | **APPROVED** | **I2** creates the Free subscription entitlement: `subscriptions.plan_code = free`, `status = active`. **I4** is reserved for billing, payment gateways, upgrades, and commercial subscription features. Free entitlement is **not** deferred to I4. |
+| **D-ONBOARD-PHASE** | **APPROVED** | **I1** manages user identity and authentication only (register, login, logout, email verification, password reset, resend). **I2** creates personal tenant, owner membership, and Free subscription entitlement. **I1** and **I2** are separate phases — **not** one atomic database transaction. Project creation requires email verification (**D-EMAIL-V**) and is **not** automatic during registration or I2 onboarding. |
+| **D-SUB-SCHEMA** | **CLOSED** | Official subscription column name: **`subscriptions.plan_code`** (not `plan`). |
+
+**Relationship to D-ONBOARD:** **D-ONBOARD** retains the intent that each user receives a personal tenant through onboarding. **D-ONBOARD-PHASE** clarifies that tenant, membership, and subscription are created in **I2**, not in the same request or transaction as **I1** registration.
+
+### Decisions still open
+
+| ID | Topic | Status |
+|----|-------|--------|
+| **D-PROJECT-COL** | External project string column on `projects`: `project_id` vs `public_id` | **OPEN — OWNER DECISION REQUIRED** |
+| **D-TENANT-RES** | Tenant resolution mechanism (header, subdomain, session default, hybrid) | **OPEN — OWNER DECISION REQUIRED** |
+
+---
+
 ## Previously approved (retained)
 
 | ID | Status | Note |

@@ -1,4 +1,11 @@
-# Foundation & Identity Architecture v1.0
+> **Historical / superseded (27 November 2026).** This is the **condensed** I0 closure summary. It is **not** the immutable original architecture (25 November 2026).
+>
+> - **Canonical draft (implementation):** [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md) — pending **Gate 3** owner approval.
+> - **Original archive (immutable):** [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0-ORIGINAL-2026-11-25.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0-ORIGINAL-2026-11-25.md).
+>
+> Do not treat this file as the canonical implementation architecture.
+
+# Foundation & Identity Architecture v1.0 (condensed)
 
 **Status:** Formal repository architecture record for I0 closure  
 **Effective date:** 27 November 2026 (UTC)  

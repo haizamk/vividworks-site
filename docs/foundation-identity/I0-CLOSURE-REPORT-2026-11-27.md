@@ -16,12 +16,14 @@ I0 Formal Documentation Closure consolidates owner-approved Foundation & Identit
 
 | Artifact | Path |
 |----------|------|
-| Architecture v1.0 | [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md) |
+| Original archive (immutable) | [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0-ORIGINAL-2026-11-25.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0-ORIGINAL-2026-11-25.md) |
+| Canonical draft v1.0.1 | [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md) — **pending Gate 3** |
+| Condensed v1.0 (superseded) | [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md) |
 | I0 Decision Record | [`I0-DECISION-RECORD-2026-11-27.md`](./I0-DECISION-RECORD-2026-11-27.md) |
 | I1 Readiness Checklist | [`I1-READINESS-CHECKLIST-2026-11-27.md`](./I1-READINESS-CHECKLIST-2026-11-27.md) |
 | This closure report | [`I0-CLOSURE-REPORT-2026-11-27.md`](./I0-CLOSURE-REPORT-2026-11-27.md) |
 
-**Note on Architecture v1.0:** The long-form document previously held outside the repo was **not** found in workspace, Drive, or store during I0 prep. The committed v1.0 file **locks owner decisions** and **incorporates schema detail by reference** to `docs/FOUNDATION-IDENTITY-AUDIT-2026-11-25.md` §6 without altering F1. If an external canonical copy differs, owner should diff and raise a **v1.0.1** revision — **not** silent drift.
+**Update (Gate 2, 2026-11-27):** The verified 25 November original architecture is **ingested verbatim** into the repository. **v1.0.1** is **drafted** for reconciliation; **Gate 3** owner approval is required before it is canonical for implementation. **I0 formal sign-off (Gate 4)** remains pending.
 
 ---
 

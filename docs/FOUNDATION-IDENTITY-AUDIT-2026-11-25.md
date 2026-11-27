@@ -4,7 +4,7 @@
 **Kemas kini terakhir:** 25 November 2026 — keputusan pemilik **D-EMAIL-V** (APPROVED)  
 **Repo:** `vividworks-site` @ `main` — snapshot kod audit: `12aa29f`; laporan audit diterbitkan: `466c518`  
 **Skop:** AUDIT & DESIGN ONLY — tiada migrasi, ubah kod, SQL, n8n, deploy, atau push dilakukan dalam sesi ini.  
-**Input rancangan:** `docs/foundation-identity/FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md` (I0 closure 27 Nov 2026). Keputusan mengikat: `docs/foundation-identity/I0-DECISION-RECORD-2026-11-27.md`.
+**Input rancangan:** Arkib asal `docs/foundation-identity/FOUNDATION-IDENTITY-ARCHITECTURE-v1.0-ORIGINAL-2026-11-25.md`; draf kanonik `docs/foundation-identity/FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md`. Keputusan mengikat: `docs/foundation-identity/I0-DECISION-RECORD-2026-11-27.md`.
 
 ---
 
@@ -15,7 +15,7 @@
 | Identiti pelanggan | **Tiada** — model `User` skeleton, **tiada** migrasi `users`, **tiada** route auth | Laravel sebagai **satu-satunya authority** identiti; Sanctum untuk SPA + token API |
 | Multi-tenant | **Tiada** | `tenants` + `tenant_memberships` + `projects` memegang `project_id` F1 |
 | F1 `project_id` / `request_id` | **Beroperasi** sebagai string bebas; unik global `(project_id, request_id)` | Kekalkan kontrak F1; tambah **pautan** `projects` → tenant tanpa ubah state machine |
-| Staging Supabase | 47 baris `generations`, **tiada** jadual auth (snapshot 25 Nov dalam `PROJECT-AUDIT`) | Backfill atau “sandbox system tenant”; jangan padam data ujian |
+| Staging Supabase | Snapshot histori ~47 `generations` (25 Nov); **A4.40** memerhatikan **49** — jangan angka tetap | Backfill atau “sandbox system tenant”; **D-LEGACY-47:** tiada backfill untuk kini |
 | Marketing React | CTA → `/akan-datang`; env `VITE_SAAS_*` belum disambung | SPA SaaS memanggil `api.*` dengan Sanctum cookie / Bearer |
 | Pengesahan e-mel | Belum diimplementasi (`MustVerifyEmail` dikomen) | **DILULUSKAN:** wajib untuk semua pelan (Free/Grow/Pro/Elite); lihat §8.1 |
 | PHPUnit F1 | Liputan luas dalam repo | Jalankan `./vendor/bin/phpunit` pada mesin dengan Composer (VM audit ini tiada `composer`) |
@@ -182,7 +182,9 @@ erDiagram
 | `tenants` | `name`, `slug` | `slug` unique |
 | `tenant_memberships` | `role` ∈ `owner`, `admin`, `member` (minimum) | unique `(tenant_id, user_id)` |
 | `projects` | `public_id` varchar(64), `tenant_id` | **unique `public_id`** (global — sejajar F1 hari ini); FK `tenant_id` |
-| `subscriptions` | `plan` ∈ `free`,`grow`,`pro`,`elite` (selari F1 package) | FK `tenant_id`; satu “aktif” per tenant (peraturan perniagaan) |
+| `subscriptions` | `plan` ∈ `free`,`grow`,`pro`,`elite` (selari F1 package) — **rujukan audit 25 Nov** | FK `tenant_id`; satu “aktif” per tenant (peraturan perniagaan) |
+
+> **Kemas kini 2026-11-27 — D-SUB-SCHEMA (CLOSED):** Nama lajur rasmi untuk implementasi ialah **`subscriptions.plan_code`**, bukan `plan`. Rujuk v1.0.1 §5.3.
 
 **Tiada** foreign key DB dari `generations.project_id` → `projects.public_id` pada fasa pertama (elak lock pada 47 baris legacy); gunakan **validasi aplikasi** + backfill berperingkat.
 
@@ -211,9 +213,11 @@ erDiagram
 
 ### 7.1 Aliran yang perlu direka (tiada dalam repo)
 
+> **Kemas kini 2026-11-27 (Gate 2):** **D-ONBOARD-PHASE** — **I1** cipta pengguna sahaja (register/login/verify/reset). **I2** cipta tenant peribadi + membership `owner` + entitlement `subscriptions.plan_code=free` / `status=active` (**D-PHASE-SUB**). Bukan satu transaksi pangkalan data merentas I1 dan I2. Cipta projek hanya selepas **D-EMAIL-V**. Rujuk `docs/foundation-identity/FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md` §7–8.
+
 | Aliran | Status repo | Acceptance criteria |
 |--------|-------------|----------------------|
-| Pendaftaran | Tiada | Cipta user **unverified** (`email_verified_at` null); hantar e-mel pengesahan; cipta tenant peribadi + membership `owner` hanya selepas verify **atau** cipta tenant tetapi gate API kekal (lihat D-EMAIL-V) |
+| Pendaftaran | Tiada | Cipta user **unverified** (`email_verified_at` null); hantar e-mel pengesahan; *(jadual di bawah — teks 25 Nov)* cipta tenant peribadi + membership `owner` hanya selepas verify **atau** cipta tenant tetapi gate API kekal (lihat D-EMAIL-V) |
 | Login / logout | Tiada | Session Sanctum sah untuk pengguna unverified; logout membatalkan token |
 | Email verification | Model sedia, tidak wajib | **D-EMAIL-V APPROVED:** wajib semua pelan; `User` implements `MustVerifyEmail`; middleware `verified` pada cipta projek & F1 invoke |
 | Resend verification | Tiada | Endpoint berthrottle; sah hanya untuk session pengguna unverified |
@@ -255,6 +259,8 @@ erDiagram
 
 ### 8.2 Keputusan masih terbuka
 
+> **Superseded 2026-11-27:** Keputusan dalam jadual di bawah telah **ditutup** melalui [`docs/foundation-identity/I0-DECISION-RECORD-2026-11-27.md`](./foundation-identity/I0-DECISION-RECORD-2026-11-27.md) kecuali yang masih **OPEN** di sana (**D-PROJECT-COL**, **D-TENANT-RES**). Jadual dikekalkan sebagai bukti audit 25 Nov.
+
 | ID | Topik | Pilihan | Implikasi |
 |----|-------|---------|-----------|
 | D-PID-FMT | Format `project_id` **baru** | (A) UUID tanpa sempang 32 char (B) `vw_` + ulid (C) slug bisnes | Panjang max 64; keterbacaan vs collision |
@@ -289,9 +295,9 @@ Snapshot histori (`docs/PROJECT-AUDIT-2026-11-24.md` §14): ~47 generations pada
 |------|------|------|
 | **I0** | Kelulusan reka bentuk + keputusan §8 | Khairul + semakan v1.0 |
 | **I1** | Migrasi `users`, Sanctum, register/login/**verify + resend**/reset; `MustVerifyEmail`; **tanpa** sentuh F1 | PHPUnit: unverified blocked from guarded routes; F1 suite hijau |
-| **I2** | `tenants`, `tenant_memberships`, `projects`; policy + resolution; **`verified` pada cipta projek** | Integration: unverified tidak boleh cipta projek |
+| **I2** | `tenants`, `tenant_memberships`, **`subscriptions` entitlement** (`plan_code=free`, `status=active`), `projects` (polisi); **`verified` pada cipta projek** | Integration: unverified tidak boleh cipta projek; **D-PHASE-SUB** |
 | **I3** | Lindungi `POST design-generations` (auth + **verified** + project ownership) | F1 regression; unverified → 403 |
-| **I4** | `subscriptions` (free tier minimum) | Product |
+| **I4** | Billing, gateway, naik taraf pelan (komersial) — **bukan** ciptaan entitlement Free | Product |
 | **I5** | React SaaS env + ganti `/akan-datang` | E2E |
 | **I6** | Backfill staging optional | Backup |
 
