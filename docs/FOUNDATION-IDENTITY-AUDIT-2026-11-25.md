@@ -4,7 +4,7 @@
 **Kemas kini terakhir:** 25 November 2026 — keputusan pemilik **D-EMAIL-V** (APPROVED)  
 **Repo:** `vividworks-site` @ `main` — snapshot kod audit: `12aa29f`; laporan audit diterbitkan: `466c518`  
 **Skop:** AUDIT & DESIGN ONLY — tiada migrasi, ubah kod, SQL, n8n, deploy, atau push dilakukan dalam sesi ini.  
-**Input rancangan:** `FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md` — **tidak dijumpai** dalam repo atau upload sesi ini; bandingan dengan v1.0 perlu dilakukan semula apabila fail itu dilampirkan.
+**Input rancangan:** `docs/foundation-identity/FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md` (I0 closure 27 Nov 2026). Keputusan mengikat: `docs/foundation-identity/I0-DECISION-RECORD-2026-11-27.md`.
 
 ---
 
@@ -269,9 +269,9 @@ erDiagram
 
 ---
 
-## 9. Staging: 47 rekod `generations`
+## 9. Staging: rekod F1 legacy (jumlah tidak tetap)
 
-Snapshot (`docs/PROJECT-AUDIT-2026-11-24.md` §14): 47 generations, 50 attempts, tiada `users`.
+Snapshot histori (`docs/PROJECT-AUDIT-2026-11-24.md` §14): ~47 generations pada 25 Nov; **A4.40** (27 Nov) memerhatikan **49** generations. **Jangan gunakan angka tetap dalam dokumentasi.** Rujuk **D-LEGACY-47** dalam `docs/foundation-identity/I0-DECISION-RECORD-2026-11-27.md`. Tiada `users` pada snapshot.
 
 | Strategi | Langkah | Rollback |
 |----------|---------|----------|
