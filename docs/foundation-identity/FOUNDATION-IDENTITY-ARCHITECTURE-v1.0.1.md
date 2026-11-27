@@ -1,7 +1,7 @@
 # VividWorks — Foundation & Identity Architecture v1.0.1
 
-**Classification:** RECONSTRUCT AND RECONCILE (canonical implementation draft)  
-**Status:** **Draft** — pending **Gate 3** owner approval  
+**Classification:** RECONSTRUCT AND RECONCILE (canonical implementation architecture)  
+**Status:** **Approved (Gate 3)** — Khairul, 27 November 2026 (UTC)  
 **Effective date:** 27 November 2026 (UTC)  
 **Repository:** `haizamk/vividworks-site`  
 **Owner authority:** Khairul  
@@ -14,7 +14,7 @@
 
 **Supersedes:** [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md) (condensed, 27 Nov 2026).
 
-**Normative stack:** I0 Decision Record wins on conflict with this document until Gate 3 approval locks v1.0.1.
+**Normative stack:** [`I0-DECISION-RECORD-2026-11-27.md`](./I0-DECISION-RECORD-2026-11-27.md) wins on conflict; **v1.0.1** is canonical for implementation architecture (**Gate 3** approved). **Gate 5** required before code.
 
 ---
 
@@ -25,6 +25,7 @@
 | 1.0 | 2026-11-25 | Original architecture — see ORIGINAL archive (not modified) |
 | 1.0 (condensed) | 2026-11-27 | I0 closure summary — superseded |
 | **1.0.1** | 2026-11-27 | Draft canonical doc; I1/I2 split; D-PHASE-SUB; D-ONBOARD-PHASE; `plan_code` closed |
+| **1.0.1** | 2026-11-27 | **Gate 3 approved** (Khairul) — canonical for implementation architecture |
 
 ---
 
@@ -358,12 +359,12 @@ No PostgREST/anon direct access to F1 tables without policy design.
 | Precedence | Document |
 |------------|----------|
 | 1 | [`I0-DECISION-RECORD-2026-11-27.md`](./I0-DECISION-RECORD-2026-11-27.md) |
-| 2 | **This file (v1.0.1)** after Gate 3 |
+| 2 | **This file (v1.0.1)** — Gate 3 approved |
 | 3 | [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0-ORIGINAL-2026-11-25.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0-ORIGINAL-2026-11-25.md) (immutable) |
 | 4 | [`FOUNDATION-IDENTITY-AUDIT-2026-11-25.md`](../FOUNDATION-IDENTITY-AUDIT-2026-11-25.md) (detail + clarifications) |
 | 5 | [`FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md`](./FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.md) (superseded condensed) |
 
-**Gate 3** owner approval required before treating this document as canonical for implementation.
+**Gate 3:** approved 2026-11-27 (Khairul). **Gate 5 / I1 code:** not authorized by Gate 3 alone.
 
 **Open decisions blocking full DDL lock:**
 
@@ -372,4 +373,4 @@ No PostgREST/anon direct access to F1 tables without policy design.
 
 ---
 
-*v1.0.1 draft prepared under Gate 2 documentation authorization. Implementation not authorized.*
+*v1.0.1 canonical architecture (Gate 3). I1 implementation requires Gate 5 + A4.41.*

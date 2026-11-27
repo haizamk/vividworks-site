@@ -74,9 +74,10 @@ The following `docs/FOUNDATION-IDENTITY-AUDIT-2026-11-25.md` §8.2 rows are **cl
 
 ---
 
-## Sign-off (pending)
+## Sign-off
 
 | Role | Action | Date |
 |------|--------|------|
-| Khairul | Approve I0 closure report | _Pending_ |
-| Guru | Confirm alignment with product intent | _Pending via user review_ |
+| Khairul | **Gate 3:** Approve `FOUNDATION-IDENTITY-ARCHITECTURE-v1.0.1.md` | 2026-11-27 (UTC) |
+| Khairul | **Gate 4:** I0 formal sign-off (`I0-CLOSURE-REPORT`) | 2026-11-27 (UTC) |
+| Guru | Documentation review (PR #7 + I0.2h) | 2026-11-27 (UTC) |
