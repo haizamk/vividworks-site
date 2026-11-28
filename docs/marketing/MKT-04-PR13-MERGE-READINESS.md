@@ -1,7 +1,7 @@
 # MKT-04 — PR #13 merge readiness (agent pre-flight)
 
 **Branch:** `cursor/marketing-mkt03r-6b21`  
-**HEAD:** `c7c9be8` (merge readiness + verify on `cursor/**`)  
+**HEAD:** `beacc65` (merge readiness + verify on `cursor/**`)  
 **Base `main`:** `8cb6581`  
 **PR:** https://cursor.com/codebase/khairul-haizam/vividworks-site/pull/13  
 **Tarikh semakan agent:** 28 November 2026 (Asia/Kuala_Lumpur)
