@@ -46,8 +46,8 @@ Preview `preview.vividworks.my` boleh kekal hidup; **jangan** ubah tanpa kelulus
 ## A — Pra-merge (kod)
 
 - [ ] Semak & merge [PR #13](https://cursor.com/codebase/khairul-haizam/vividworks-site/pull/13) → `main` (tanpa merge automatik agent)
-- [ ] Harness lokal: `bash deploy/production/test-mkt03r.sh` → **PASS** (28/28 selepas MKT-03R)
-- [ ] `npm test` / `npm run build` pada commit release — **PASS**
+- [ ] Harness lokal: `bash deploy/production/test-mkt03r.sh` → **PASS** (28/28 selepas MKT-03R) — **agent: OK** 2026-11-28, lihat [MKT-04-PR13-MERGE-READINESS](./MKT-04-PR13-MERGE-READINESS.md)
+- [ ] `npm test` / `npm run build` pada commit release — **PASS** — **agent: OK** 2026-11-28
 - [ ] Pastikan workflow `.github/workflows/production-deploy.yml` ada pada `main` dan secret deploy (`VIVIDPREVIEW_SSH_KEY` atau setara) masih sah — **NOT VERIFIED** semasa merge; semak sebelum tag
 
 **Dilarang tanpa kelulusan:** push tag production, set `VIVIDWORKS_PROD_GO_LIVE`, tukar DNS, mirror paksa ke GitHub `haizamk/*`.
