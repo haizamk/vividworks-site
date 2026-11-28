@@ -19,33 +19,38 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Resolve release ref
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Resolve and validate release ref
         id: release
+        env:
+          INPUT_REF: ${{ inputs.ref }}
         run: |
           set -euo pipefail
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            REF="${GITHUB_REF_NAME}"
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            REF="$GITHUB_REF_NAME"
           else
-            REF="${{ inputs.ref }}"
+            REF="$INPUT_REF"
           fi
-          if [[ ! "$REF" =~ ^marketing-prod/v[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.[0-9]+$ ]]; then
-            echo "::error::Rejected ref '$REF': must match marketing-prod/vYYYY.MM.DD.N"
-            exit 1
-          fi
-          if [[ "$REF" == "main" ]] || [[ "$REF" =~ ^[0-9a-f]{7,40}$ ]]; then
-            echo "::error::Rejected ref '$REF': branches and raw SHAs are not allowed"
-            exit 1
-          fi
+          # shellcheck source=deploy/production/validate-release-ref.sh
+          source deploy/production/validate-release-ref.sh
+          validate_marketing_prod_ref "$REF"
           echo "ref=$REF" >> "$GITHUB_OUTPUT"
           echo "Validated release ref: $REF"
 
-      - uses: actions/checkout@v4
+      - name: Checkout release tag
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v4
         with:
           ref: refs/tags/${{ steps.release.outputs.ref }}
           fetch-depth: 1
 
       - name: Record source SHA from checkout
         id: source
+        env:
+          EXPECTED_TAG: ${{ steps.release.outputs.ref }}
         run: |
           set -euo pipefail
           SHA="$(git rev-parse HEAD)"
@@ -54,8 +59,8 @@ jobs:
             exit 1
           fi
           TAG="$(git describe --exact-match --tags HEAD)"
-          if [[ "$TAG" != "${{ steps.release.outputs.ref }}" ]]; then
-            echo "::error::Checked out tag '$TAG' does not match requested '${{ steps.release.outputs.ref }}'"
+          if [[ "$TAG" != "$EXPECTED_TAG" ]]; then
+            echo "::error::Checked out tag '$TAG' does not match requested '$EXPECTED_TAG'"
             exit 1
           fi
           echo "sha=$SHA" >> "$GITHUB_OUTPUT"

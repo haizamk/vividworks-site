@@ -77,8 +77,11 @@ else
 fi
 
 echo "=== rollback logic (mock docker) ==="
+MKT03R_TMP="$(mktemp -d)"
 MOCK_DIR="$(mktemp -d)"
-MOCK_CLEANUP() { rm -rf "$MOCK_DIR" /tmp/mkt03r-volume /tmp/mkt03r-unhealthy /tmp/mkt03r-mount-ok /tmp/mkt03r-docker-rm; }
+MOCK_STATE_DIR="$MKT03R_TMP/state"
+mkdir -p "$MOCK_STATE_DIR"
+MOCK_CLEANUP() { rm -rf "$MOCK_DIR" "$MKT03R_TMP"; }
 trap 'TAG_REPO_CLEANUP; MOCK_CLEANUP' EXIT
 
 cat >"$MOCK_DIR/docker" <<'MOCK'
@@ -90,13 +93,13 @@ case "$cmd" in
   volume)
     if [[ "$1" == "create" ]]; then
       if [[ "${MOCK_VOLUME_FAIL:-}" == "1" ]]; then exit 1; fi
-      touch /tmp/mkt03r-volume
+      touch "${MOCK_STATE_DIR:?}/volume"
     fi
     [[ "$1" == "inspect" ]] && exit 0
     exit 0
     ;;
   rm)
-    if [[ "$1" == "-f" ]]; then touch /tmp/mkt03r-docker-rm; fi
+    if [[ "$1" == "-f" ]]; then touch "${MOCK_STATE_DIR:?}/docker-rm"; fi
     exit 0
     ;;
   inspect)
@@ -113,19 +116,20 @@ case "$cmd" in
     joined="$*"
     vol="${DATA_VOLUME:?}:${VIVIDWORKS_EXPECTED_MOUNT:?}"
     if [[ "$joined" == *"-v"*"${vol}"* ]] || [[ "$joined" == *"-v ${vol}"* ]] || [[ "$joined" == *"-v"*"${DATA_VOLUME}:/app/data"* ]]; then
-      touch /tmp/mkt03r-mount-ok
+      touch "${MOCK_STATE_DIR:?}/mount-ok"
     fi
     img="${@: -1}"
     if [[ "$img" == *bad-run* ]]; then exit 1; fi
     if [[ "$img" == *bad-health* ]]; then
-      echo bad-health > /tmp/mkt03r-unhealthy
+      echo bad-health > "${MOCK_STATE_DIR:?}/unhealthy"
     else
-      rm -f /tmp/mkt03r-unhealthy
+      rm -f "${MOCK_STATE_DIR:?}/unhealthy"
     fi
     exit 0
     ;;
   exec)
-    if [[ -f /tmp/mkt03r-unhealthy ]]; then exit 1; fi
+    if [[ -f "${MOCK_STATE_DIR:?}/unhealthy" ]]; then exit 1; fi
+    if [[ "${MOCK_HTTP_NOT_OK:-}" == "1" ]]; then exit 1; fi
     exit 0
     ;;
   build) exit 0 ;;
@@ -143,10 +147,10 @@ exit 1
 SUDO
 chmod +x "$MOCK_DIR/sudo"
 export PATH="$MOCK_DIR:$PATH"
+export MOCK_STATE_DIR
 
-export VIVIDWORKS_PROD_ROOT="/tmp/mkt03r-prod"
+export VIVIDWORKS_PROD_ROOT="$MKT03R_TMP/prod"
 export VIVIDWORKS_EXPECTED_MOUNT="/app/data"
-rm -rf "$VIVIDWORKS_PROD_ROOT"
 mkdir -p "$VIVIDWORKS_PROD_ROOT/releases/old" "$VIVIDWORKS_PROD_ROOT/releases/new"
 # shellcheck disable=SC1091
 source "$ROOT/deploy/production/vividworks-prod-deploy.sh"
@@ -238,7 +242,7 @@ else
   fail_test "12 should fail without previous image"
 fi
 
-if [[ -f /tmp/mkt03r-mount-ok ]]; then
+if [[ -f "$MOCK_STATE_DIR/mount-ok" ]]; then
   pass_test "13 docker run uses named volume mount ${DATA_VOLUME}:/app/data"
 else
   fail_test "13 volume mount assertion missing"
@@ -268,14 +272,15 @@ else
   fail_test "16 live smoke candidate=$cand preview=$prev"
 fi
 
-rm -f /tmp/mkt03r-docker-rm
+export MOCK_VOLUME_FAIL=1
+rm -f "$MOCK_STATE_DIR/docker-rm"
 export MOCK_HAS_CONTAINER=1
 run_rc=0
 run_container "vividworks-prod:good" || run_rc=$?
-if [[ "$run_rc" -eq 2 ]] && [[ ! -f /tmp/mkt03r-docker-rm ]]; then
+if [[ "$run_rc" -eq 2 ]] && [[ ! -f "$MOCK_STATE_DIR/docker-rm" ]]; then
   pass_test "17 volume failure before docker rm (no container removal)"
 else
-  fail_test "17 expected rc=2 without docker rm (rc=$run_rc rm=$([[ -f /tmp/mkt03r-docker-rm ]] && echo yes || echo no))"
+  fail_test "17 expected rc=2 without docker rm (rc=$run_rc rm=$([[ -f "$MOCK_STATE_DIR/docker-rm" ]] && echo yes || echo no))"
 fi
 unset MOCK_VOLUME_FAIL
 
@@ -288,13 +293,13 @@ attempt_rollback() {
 export MOCK_VOLUME_FAIL=1
 export MOCK_HAS_CONTAINER=1
 capture_previous_image_like_main
-rm -f /tmp/mkt03r-docker-rm
+rm -f "$MOCK_STATE_DIR/docker-rm"
 main_start_rc=0
 deploy_start_container_or_abort "vividworks-prod:new-fail-vol" || main_start_rc=$?
-if [[ "$main_start_rc" -eq 2 && "$MKT03R_ROLLBACK_CALLS" -eq 0 && ! -f /tmp/mkt03r-docker-rm ]]; then
+if [[ "$main_start_rc" -eq 2 && "$MKT03R_ROLLBACK_CALLS" -eq 0 && ! -f "$MOCK_STATE_DIR/docker-rm" ]]; then
   pass_test "18 deploy_start_container_or_abort: no attempt_rollback on volume failure"
 else
-  fail_test "18 main path (rc=$main_start_rc rollbacks=$MKT03R_ROLLBACK_CALLS rm=$([[ -f /tmp/mkt03r-docker-rm ]] && echo yes || echo no))"
+  fail_test "18 main path (rc=$main_start_rc rollbacks=$MKT03R_ROLLBACK_CALLS rm=$([[ -f "$MOCK_STATE_DIR/docker-rm" ]] && echo yes || echo no))"
 fi
 unset MOCK_VOLUME_FAIL
 
@@ -336,6 +341,58 @@ if [[ "$deploy_log" == *"rollback not attempted"* ]] \
 else
   fail_test "21 deploy log message"
 fi
+
+echo "=== review fix coverage (hostname, cleanup, harness, health) ==="
+assert_reject "22 release ref rejects shell metachar" 'marketing-prod/v2026.11.27.1;echo pwned'
+if ( ROUTING_HOST="VIVIDWORKS.MY."; unset VIVIDWORKS_PROD_GO_LIVE; refuse_public_hosts ) 2>/dev/null; then
+  fail_test "23 public host VIVIDWORKS.MY. without approval should refuse"
+else
+  pass_test "23 uppercase trailing-dot public host blocked without approval"
+fi
+ROUTING_HOST="marketing-prod-candidate.51-79-159-241.sslip.io"
+unset VIVIDWORKS_PROD_GO_LIVE
+if ( ROUTING_HOST="marketing-prod-candidate.51-79-159-241.sslip.io"; refuse_public_hosts ); then
+  pass_test "24 candidate host allowed without go-live approval"
+else
+  fail_test "24 candidate host should be allowed"
+fi
+export VIVIDWORKS_PROD_GO_LIVE=approved-by-owner
+if ( ROUTING_HOST="VIVIDWORKS.MY"; refuse_public_hosts ); then
+  pass_test "25 public host allowed with owner approval (normalized)"
+else
+  fail_test "25 public host with approval should pass"
+fi
+ROUTING_HOST="marketing-prod-candidate.51-79-159-241.sslip.io"
+unset VIVIDWORKS_PROD_GO_LIVE
+
+active_rel="$VIVIDWORKS_PROD_ROOT/releases/active-keep"
+rollback_rel="$VIVIDWORKS_PROD_ROOT/releases/rollback-keep"
+failed_rel="$VIVIDWORKS_PROD_ROOT/releases/failed-remove"
+mkdir -p "$active_rel" "$rollback_rel" "$failed_rel"
+ln -sfn "$active_rel" "$CURRENT"
+previous_current="$rollback_rel"
+prune_failed_release_dir "$active_rel"
+prune_failed_release_dir "$rollback_rel"
+prune_failed_release_dir "$failed_rel"
+if [[ -d "$active_rel" && -d "$rollback_rel" && ! -d "$failed_rel" ]]; then
+  pass_test "26 failed release cleanup preserves active and rollback paths"
+else
+  fail_test "26 prune_failed_release_dir preservation"
+fi
+case "$MKT03R_TMP" in
+  /tmp/* | /var/tmp/*) pass_test "27 harness uses isolated mktemp root ($MKT03R_TMP)" ;;
+  *) fail_test "27 harness temp root unexpected: $MKT03R_TMP" ;;
+esac
+unset MOCK_HTTP_NOT_OK
+export MOCK_HAS_CONTAINER=1
+run_container "vividworks-prod:good" || true
+export MOCK_HTTP_NOT_OK=1
+if container_health; then
+  fail_test "28 container health rejects non-OK HTTP response"
+else
+  pass_test "28 container health rejects non-OK HTTP response"
+fi
+unset MOCK_HTTP_NOT_OK
 
 echo "=== summary pass=$pass fail=$fail ==="
 [[ "$fail" -eq 0 ]]

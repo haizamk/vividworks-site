@@ -4,6 +4,15 @@ set -euo pipefail
 
 validate_marketing_prod_ref() {
   local ref="$1"
+  if [[ "$ref" == *$'\n'* ]] || [[ "$ref" == *$'\r'* ]]; then
+    echo "rejected: unsafe-newline"
+    return 1
+  fi
+  if [[ "$ref" == *';'* ]] || [[ "$ref" == *'$'* ]] || [[ "$ref" == *'`'* ]] \
+    || [[ "$ref" == *'|'* ]] || [[ "$ref" == *'&'* ]] || [[ "$ref" == *'<'* ]] || [[ "$ref" == *'>'* ]]; then
+    echo "rejected: shell-metachar"
+    return 1
+  fi
   if [[ ! "$ref" =~ ^marketing-prod/v[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.[0-9]+$ ]]; then
     echo "rejected: format"
     return 1

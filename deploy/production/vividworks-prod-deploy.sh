@@ -20,7 +20,16 @@ log() {
   printf '[vividworks-prod-deploy] %s\n' "$*"
 }
 
+normalize_routing_host() {
+  local host="${ROUTING_HOST}"
+  host="${host%.}"
+  host="$(printf '%s' "$host" | tr '[:upper:]' '[:lower:]')"
+  ROUTING_HOST="$host"
+  export ROUTING_HOST
+}
+
 refuse_public_hosts() {
+  normalize_routing_host
   case "${ROUTING_HOST}" in
     vividworks.my | www.vividworks.my)
       if [[ "${VIVIDWORKS_PROD_GO_LIVE:-}" != "approved-by-owner" ]]; then
@@ -44,7 +53,26 @@ ensure_docker() {
 
 container_health() {
   sudo docker exec "$CONTAINER_NAME" node -e \
-    "fetch('http://127.0.0.1:'+(process.env.PORT||8080)+'/api/health').then(r=>r.json()).then(j=>process.exit(j.ok?0:1)).catch(()=>process.exit(1))"
+    "fetch('http://127.0.0.1:'+(process.env.PORT||8080)+'/api/health').then(async r=>{let j={};try{j=await r.json()}catch{};process.exit(r.ok&&j.ok?0:1)}).catch(()=>process.exit(1))"
+}
+
+prune_failed_release_dir() {
+  local failed_path="$1"
+  [[ -z "$failed_path" || ! -d "$failed_path" ]] && return 0
+  local active_current=""
+  if [[ -L "$CURRENT" ]]; then
+    active_current="$(readlink -f "$CURRENT" 2>/dev/null || readlink "$CURRENT")"
+  fi
+  if [[ -n "$active_current" && "$failed_path" == "$active_current" ]]; then
+    log "Skipping cleanup of active release path ${failed_path}"
+    return 0
+  fi
+  if [[ -n "$previous_current" && "$failed_path" == "$previous_current" ]]; then
+    log "Skipping cleanup of rollback release path ${failed_path}"
+    return 0
+  fi
+  rm -rf "$failed_path"
+  log "Removed failed release directory ${failed_path}"
 }
 
 capture_previous_current() {
@@ -230,6 +258,7 @@ main() {
   local start_rc=0
   deploy_start_container_or_abort "$image_tag" || start_rc=$?
   if [[ "$start_rc" -ne 0 ]]; then
+    prune_failed_release_dir "$target"
     exit 1
   fi
   sleep 5
@@ -239,7 +268,8 @@ main() {
     log "Deploy healthy; previous_image=${previous_image:-none}"
   else
     log "Health check failed after deploy"
-    attempt_rollback "health check failure" || exit 1
+    attempt_rollback "health check failure" || true
+    prune_failed_release_dir "$target"
     exit 1
   fi
 
