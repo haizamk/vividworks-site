@@ -1,0 +1,106 @@
+name: Deploy marketing production (tagged)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Marketing production release tag (marketing-prod/vYYYY.MM.DD.N only)
+        required: true
+        type: string
+  push:
+    tags:
+      - "marketing-prod/v*"
+
+concurrency:
+  group: vividworks-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Resolve and validate release ref
+        id: release
+        env:
+          INPUT_REF: ${{ inputs.ref }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            REF="$GITHUB_REF_NAME"
+          else
+            REF="$INPUT_REF"
+          fi
+          # shellcheck source=deploy/production/validate-release-ref.sh
+          source deploy/production/validate-release-ref.sh
+          validate_marketing_prod_ref "$REF"
+          echo "ref=$REF" >> "$GITHUB_OUTPUT"
+          echo "Validated release ref: $REF"
+
+      - name: Checkout release tag
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ steps.release.outputs.ref }}
+          fetch-depth: 1
+
+      - name: Record source SHA from checkout
+        id: source
+        env:
+          EXPECTED_TAG: ${{ steps.release.outputs.ref }}
+        run: |
+          set -euo pipefail
+          SHA="$(git rev-parse HEAD)"
+          if ! git describe --exact-match --tags HEAD >/dev/null 2>&1; then
+            echo "::error::Checkout HEAD is not an exact release tag match"
+            exit 1
+          fi
+          TAG="$(git describe --exact-match --tags HEAD)"
+          if [[ "$TAG" != "$EXPECTED_TAG" ]]; then
+            echo "::error::Checked out tag '$TAG' does not match requested '$EXPECTED_TAG'"
+            exit 1
+          fi
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "Source SHA for deployment: $SHA"
+
+      - name: Deploy to production candidate host
+        env:
+          SSH_KEY: ${{ secrets.VIVIDPREVIEW_SSH_KEY }}
+          HOST: 51.79.159.241
+          GIT_SHA: ${{ steps.source.outputs.sha }}
+          RELEASE_TAG: ${{ steps.release.outputs.ref }}
+          ROUTING_HOST: marketing-prod-candidate.51-79-159-241.sslip.io
+        run: |
+          set -euo pipefail
+          test -n "$SSH_KEY"
+          mkdir -p ~/.ssh
+          export SSH_KEY
+          bash .github/scripts/write-ssh-key.sh ~/.ssh/id_ed25519
+          cp .github/preview_known_hosts ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_ed25519 \
+            -o IdentitiesOnly=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            "ubuntu@${HOST}" 'mkdir -p ~/bin'
+          scp -i ~/.ssh/id_ed25519 \
+            -o IdentitiesOnly=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            deploy/production/vividworks-prod-deploy.sh \
+            "ubuntu@${HOST}:~/bin/vividworks-prod-deploy"
+          ssh -i ~/.ssh/id_ed25519 \
+            -o IdentitiesOnly=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            "ubuntu@${HOST}" 'chmod +x ~/bin/vividworks-prod-deploy'
+          tar -czf - \
+            --exclude node_modules \
+            --exclude dist \
+            --exclude .env \
+            --exclude .git \
+            . | ssh -T \
+            -i ~/.ssh/id_ed25519 \
+            -o IdentitiesOnly=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            "ubuntu@${HOST}" \
+            "VIVIDWORKS_GIT_SHA=${GIT_SHA} VIVIDWORKS_RELEASE_TAG=${RELEASE_TAG} VIVIDWORKS_PROD_ROUTING_HOST=${ROUTING_HOST} ~/bin/vividworks-prod-deploy"

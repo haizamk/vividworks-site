@@ -1,5 +1,10 @@
 FROM node:22-bookworm-slim
 
+ARG VIVIDWORKS_GIT_SHA=unknown
+ARG VIVIDWORKS_RELEASE_TAG=
+LABEL org.opencontainers.image.revision="${VIVIDWORKS_GIT_SHA}"
+LABEL vividworks.release.tag="${VIVIDWORKS_RELEASE_TAG}"
+
 WORKDIR /app
 
 COPY package.json package-lock.json ./

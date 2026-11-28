@@ -1,0 +1,37 @@
+name: Marketing verify
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches:
+      - main
+      - "cursor/**"
+  workflow_dispatch:
+
+concurrency:
+  group: marketing-verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Production deploy harness (mocked)
+        run: bash deploy/production/test-mkt03r.sh
