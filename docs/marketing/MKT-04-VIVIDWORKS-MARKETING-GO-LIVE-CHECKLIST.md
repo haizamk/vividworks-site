@@ -22,6 +22,27 @@ Preview `preview.vividworks.my` boleh kekal hidup; **jangan** ubah tanpa kelulus
 
 ---
 
+## Apa Cursor boleh buat vs bila perlu ChatGPT / Guru
+
+**ChatGPT / Guru** di sini = kelulusan manusia untuk keputusan produk, merge, VPS, DNS, tag production, dan env go-live. Cursor agent **teruskan sendiri** sehingga langkah itu.
+
+| Cursor **boleh** (tanpa ChatGPT) | **Perlu** ChatGPT / Guru / akses luar |
+|----------------------------------|--------------------------------------|
+| Uji `test-mkt03r.sh`, `npm test`, `typecheck`, `build` | Merge PR #13 ke `main` |
+| Baiki kod/docs dalam branch PR | Push tag `marketing-prod/v*` + jalankan deploy SSH |
+| Tambah workflow **verify** (tanpa secret VPS) | SSH ke `51.79.159.241`, bootstrap host |
+| Kemas kini MKT checklist, laporan semakan PR | Set `VIVIDWORKS_PROD_GO_LIVE=approved-by-owner` |
+| Sedia mesej / patch untuk Guru semak | Cloudflare SSL mode, DNS, www redirect |
+| Cipta/kemas kini PR di Origin | **Live** `vividworks.my` / smoke apex |
+| Langgan notifikasi CI/PR (jika tool tersedia) | Mirror repo ke GitHub `haizamk/*`, rotate secret |
+| Semak diff PR #13, cadang fix review | Kebenaran preview deploy `main` (auto GHA) |
+
+**Status agent (branch PR #13, selepas push terkini):** harness **28/28**, `npm test` **3/3**, `typecheck` + `build` **OK** — boleh kekal kerja prep merge tanpa ChatGPT.
+
+**Halangan seterusnya (berhenti & minta Guru):** bila A–E checklist memerlukan merge, tag, SSH, atau go-live env.
+
+---
+
 ## A — Pra-merge (kod)
 
 - [ ] Semak & merge [PR #13](https://cursor.com/codebase/khairul-haizam/vividworks-site/pull/13) → `main` (tanpa merge automatik agent)
